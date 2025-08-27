@@ -1,6 +1,12 @@
-# WebAssembly + Flutter Integration Project
+<p align="center">
+  <img src="https://i.imgur.com/e1u6sR2.png" alt="Parsec Web Logo" width="200" height="400"/>
+</p>
 
-A comprehensive implementation guide for integrating C++ libraries with Flutter applications through WebAssembly.
+<p align="center">
+  Parsec Web: A very light parser for equations using WebAssembly in `equations-parser`
+</p>
+
+A comprehensive guide for integrating C++ libraries with web & flutter applications through WebAssembly.
 
 ## 🎯 Project Overview
 
@@ -136,16 +142,7 @@ Each phase includes comprehensive testing:
 - **Equations-Parser Library**: Advanced mathematical expression evaluator
 - **Flutter 3.x**: `dart:js_interop` for web integration (Phase 3+)
 
-## 🎯 Success Criteria
-
-**Phase 1 Complete When:**
-- [x] C++ functions compile to WASM without errors
-- [x] JavaScript can call WASM functions successfully  
-- [x] HTML test page demonstrates full functionality
-- [x] All tests pass with expected outputs
-- [x] Documentation is complete and accurate
-
-## 🔄 Next Steps
+## 📈 Progress Overview
 
 1. ✅ **Phase 1 Complete**: Toy WebAssembly integration working
 2. **Phase 2 Ready**: Integrate real equations-parser C++ library
@@ -154,6 +151,3 @@ Each phase includes comprehensive testing:
    - Create advanced testing interface for all equation types
 3. **Phase 3**: Flutter Web integration with equations-parser WASM
 4. **Phase 4**: Cross-platform mobile/desktop integration (optional)
-
-## 📄 License
-
