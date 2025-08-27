@@ -3,14 +3,12 @@
 </p>
 
 <p align="center">
-  Parsec Web: A very light parser for equations using WebAssembly in `equations-parser`
+  Parsec Web: A very light parser for equations using WebAssembly in equations-parser
 </p>
-
-A comprehensive guide for integrating C++ libraries with web & flutter applications through WebAssembly.
 
 ## 🎯 Project Overview
 
-This project demonstrates how to:
+This project does the following:
 - Compile C++ code to WebAssembly using Emscripten
 - Create JavaScript wrappers for WASM functions  
 - Integrate WASM libraries with Flutter Web using `dart:js_interop`
