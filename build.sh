@@ -49,6 +49,7 @@ emcc cpp/math_functions.cpp \
     -s ALLOW_MEMORY_GROWTH=1 \
     -s MODULARIZE=1 \
     -s EXPORT_NAME="MathModule" \
+    -s EXPORT_ES6=1 \
     --bind \
     -O2 \
     -g \

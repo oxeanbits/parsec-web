@@ -35,16 +35,34 @@ class MathWasmWrapper {
         try {
             console.log('🔄 Loading WebAssembly module from:', wasmPath);
             
-            // Import the Emscripten-generated module
-            const MathModule = await import(wasmPath);
+            // Import the Emscripten-generated ES6 module
+            const moduleImport = await import(wasmPath);
+            console.log('🔍 Module import successful');
             
-            // Initialize the module
-            this.module = await MathModule.default();
+            // With EXPORT_ES6=1, Emscripten exports the factory as default
+            let moduleFactory = moduleImport.default;
+            
+            if (typeof moduleFactory !== 'function') {
+                console.log('🔍 Available exports:', Object.keys(moduleImport));
+                throw new Error(`Expected factory function, got ${typeof moduleFactory}`);
+            }
+            
+            console.log('🔄 Initializing WebAssembly module...');
+            
+            // Initialize the module with the factory function
+            this.module = await moduleFactory();
+            
+            console.log('🔍 Module initialized successfully');
             
             // Test if the module loaded correctly
+            if (typeof this.module.test_wasm_loaded !== 'function') {
+                console.log('Available module functions:', Object.keys(this.module));
+                throw new Error('test_wasm_loaded function not found in module');
+            }
+            
             const testResult = this.module.test_wasm_loaded();
             if (testResult !== 42) {
-                throw new Error('WASM module test failed');
+                throw new Error(`WASM module test failed - expected 42, got ${testResult}`);
             }
             
             this.isLoaded = true;
@@ -53,6 +71,7 @@ class MathWasmWrapper {
             
         } catch (error) {
             console.error('❌ Failed to load WebAssembly module:', error);
+            console.error('Error details:', error);
             throw new Error(`WebAssembly module loading failed: ${error.message}`);
         }
     }
