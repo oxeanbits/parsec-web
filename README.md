@@ -14,80 +14,26 @@ Parsec Web transforms equation processing from server-dependent operations to li
 
 **Before (Traditional Backend):**
 ```mermaid
-graph TD
-    subgraph "Client Side"
-        A[🌐 Web Browser] -->|HTTP Request<br/>equation: "sin(pi/2)"| B[📡 Network Layer]
-        A1[📱 Mobile App] -->|HTTP Request<br/>equation: "2 + 3 * 4"| B
-        A2[🖥️ Desktop App] -->|HTTP Request<br/>equation: "sqrt(16)"| B
-    end
-
-    subgraph "Network"
-        B -->|Internet<br/>Latency + Bandwidth| C[🌍 Backend Server]
-    end
-
-    subgraph "Backend Infrastructure"
-        C[🌍 Backend Server] -->|API Call| D[🔧 Backend Logic]
-        D -->|Library Call| E[📚 Parsec Library]
-        E -->|Native Call| F[⚙️ Equations-Parser<br/>C++ Library]
-    end
-
-    subgraph "Processing Flow"
-        F -->|Compute Result| E
-        E -->|Return Value| D
-        D -->|HTTP Response<br/>result: 1.0| C
-        C -->|Internet<br/>Latency + Bandwidth| B
-        B -->|Display Result| A
-        B -->|Display Result| A1
-        B -->|Display Result| A2
-    end
-
+graph LR
+    A[🌐 Web] --> B[📡 Network] --> C[🌍 Backend Server] --> D[📚 Parsec Library] --> E[⚙️ C++ equations-parser]
+    
     style A fill:#e1f5fe
-    style A1 fill:#e1f5fe
-    style A2 fill:#e1f5fe
-    style C fill:#fff3e0
-    style F fill:#f3e5f5
     style B fill:#ffebee
+    style C fill:#fff3e0
+    style D fill:#f3e5f5
+    style E fill:#f3e5f5
 ```
 
 ❌ Problems: Network latency, server costs, scaling issues, offline limitations
 
 **After (Parsec Web):**
 ```mermaid
-graph TD
-    subgraph "Client Side Processing"
-        A[🌐 Web Browser] -->|Direct Call| B[🚀 Parsec Web<br/>WebAssembly Module]
-        A1[📱 Flutter Mobile] -->|Platform Channel| B1[📱 Native Parsec]
-        A2[🖥️ Flutter Desktop] -->|Platform Channel| B2[🖥️ Native Parsec]
-    end
-
-    subgraph "WebAssembly Integration"
-        B -->|Direct Memory Access| C[⚙️ Equations-Parser<br/>C++ → WASM]
-        B -->|JavaScript Binding| D[🔗 JS Wrapper API]
-    end
-
-    subgraph "Native Integration"
-        B1 -->|Direct Call| C1[⚙️ Equations-Parser<br/>Native C++]
-        B2 -->|Direct Call| C2[⚙️ Equations-Parser<br/>Native C++]
-    end
-
-    subgraph "Processing Flow"
-        C -->|Instant Result| B
-        C1 -->|Instant Result| B1
-        C2 -->|Instant Result| B2
-        B -->|Display Result| A
-        B1 -->|Display Result| A1
-        B2 -->|Display Result| A2
-    end
-
+graph LR
+    A[🌐 Web] --> B[🚀 Parsec Web<br/>WebAssembly] --> C[⚙️ C++ equations-parser]
+    
     style A fill:#e8f5e8
-    style A1 fill:#e8f5e8
-    style A2 fill:#e8f5e8
     style B fill:#e3f2fd
-    style B1 fill:#e3f2fd
-    style B2 fill:#e3f2fd
     style C fill:#f3e5f5
-    style C1 fill:#f3e5f5
-    style C2 fill:#f3e5f5
 ```
 
 ✅ Benefits: Zero latency, no server costs, infinite scalability, offline capable
