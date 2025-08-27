@@ -34,13 +34,14 @@ echo "📁 Output directory: wasm/"
 # -s EXPORTED_FUNCTIONS       : Export specific C functions to JavaScript
 # -s EXPORTED_RUNTIME_METHODS : Export runtime methods like ccall, cwrap
 # -s ALLOW_MEMORY_GROWTH=1    : Allow memory to grow dynamically
-# -s MODULARIZE=1             : Create a module that can be imported
-# -s EXPORT_NAME="MathModule" : Name of the module when imported
-# --bind                      : Enable Embind for C++ bindings
-# -O2                         : Optimization level 2 (good balance of speed/size)
-# -g                          : Include debug information
-# -s ENVIRONMENT=web          : Target web environment
-# -s SINGLE_FILE=1            : Embed WASM in JS file for easier distribution
+# -s MODULARIZE=1             : Wrap output in a function for import/require
+# -s EXPORT_NAME="MathModule" : Name of the exported module
+# -s EXPORT_ES6=1             : Use ES6 module syntax (import/export)
+# --bind                      : Enable C++ class/function bindings
+# -O2                         : Optimize for speed and size
+# -g                          : Include debug symbols
+# -s ENVIRONMENT=web          : Optimize for browser environment only
+# -s SINGLE_FILE=1            : Embed WASM binary inside JS file
 
 emcc cpp/math_functions.cpp \
     -s WASM=1 \
