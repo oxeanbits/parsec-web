@@ -38,14 +38,12 @@ graph LR
 
 ✅ Benefits: Zero latency, no server costs, infinite scalability, offline capable
 
-### 🚀 Key Features
+### 📋 Key Features
 - **100x Faster**: ~1ms vs ~110ms equation processing
 - **Zero Infrastructure**: No backend servers needed
 - **Full Offline Support**: Works without internet
 - **Complete Feature Parity**: All equations-parser functions available
 - **Cross-Platform**: Web, Mobile, Desktop support
-
-**[📊 View Detailed Architecture Diagrams](docs/architecture-diagrams.md)**
 
 ## 🏗️ Implementation Phases
 
