@@ -17,11 +17,11 @@ Parsec Web transforms equation processing from server-dependent operations to li
 graph LR
     A[🌐 Web] --> B[📡 Network] --> C[🌍 Backend Server] --> D[📚 Parsec Library] --> E[⚙️ C++ equations-parser]
     
-    style A fill:#e1f5fe
-    style B fill:#ffebee
-    style C fill:#fff3e0
-    style D fill:#f3e5f5
-    style E fill:#f3e5f5
+    style A fill:#e1f5fe,color:#000000
+    style B fill:#ffebee,color:#000000
+    style C fill:#fff3e0,color:#000000
+    style D fill:#f3e5f5,color:#000000
+    style E fill:#f3e5f5,color:#000000
 ```
 
 ❌ Problems: Network latency, server costs, scaling issues, offline limitations
@@ -31,9 +31,9 @@ graph LR
 graph LR
     A[🌐 Web] --> B[🚀 Parsec Web<br/>WebAssembly] --> C[⚙️ C++ equations-parser]
     
-    style A fill:#e8f5e8
-    style B fill:#e3f2fd
-    style C fill:#f3e5f5
+    style A fill:#e8f5e8,color:#000000
+    style B fill:#e3f2fd,color:#000000
+    style C fill:#f3e5f5,color:#000000
 ```
 
 ✅ Benefits: Zero latency, no server costs, infinite scalability, offline capable
