@@ -65,7 +65,7 @@ graph LR
 - `html/test.html` - Interactive test interface
 - `docs/phase1-guide.md` - Complete setup and testing guide
 
-### 🔄 Phase 2: Equations-Parser WebAssembly Integration *(Coming Next)*
+### ✅ Phase 2: Equations-Parser WebAssembly Integration
 **Goal**: Compile the real equations-parser C++ library to WebAssembly and create comprehensive web testing interface
 
 **What's planned:**
@@ -83,7 +83,7 @@ graph LR
   - **Advanced operators**: ternary operators, comparison operators
   - **Multiple return types**: integer/float, string, boolean values
 
-### 🔄 Phase 3: Automated tests for the Equations-Parser WebAssembly library
+### 🔄 Phase 3: Automated tests for the Equations-Parser WebAssembly library *(Coming Next)*
 **Goal**: Comprehensive test suite ensuring equations-parser WASM reliability and correctness
 
 **What's planned:**
@@ -227,27 +227,26 @@ Heavy: "sum(sin(1), cos(2), tan(3), ln(4), sqrt(5), abs(-6), pow(7,2), exp(0.5))
 ```
 tests/
 ├── unit/                           # Individual function tests
-│   ├── arithmetic.test.js         # Basic math operations
-│   ├── trigonometry.test.js       # Sin, cos, tan, etc.
-│   ├── logarithms.test.js         # Log, ln, exp functions
-│   ├── strings.test.js            # String manipulation
-│   ├── complex.test.js            # Complex number operations
-│   ├── arrays.test.js             # Array/matrix functions
-│   └── dates.test.js              # Date/time functions
+│   ├── arithmetic.test.js          # Basic math operations
+│   ├── trigonometry.test.js        # Sin, cos, tan, etc.
+│   ├── logarithms.test.js          # Log, ln, exp functions
+│   ├── strings.test.js             # String manipulation
+│   ├── complex.test.js             # Complex number operations
+│   ├── arrays.test.js              # Array/matrix functions
+│   └── dates.test.js               # Date/time functions
 ├── integration/                    # End-to-end workflows
 │   ├── complex-expressions.test.js # Nested function calls
-│   ├── multi-variable.test.js     # Variable assignments
-│   └── mixed-types.test.js        # String/number combinations
+│   └── mixed-types.test.js         # String/number combinations
 ├── performance/                    # Speed benchmarks
-│   ├── simple-ops.bench.js        # Basic arithmetic timing
-│   ├── function-calls.bench.js    # Mathematical function timing
-│   └── complex-expr.bench.js      # Complex expression timing
+│   ├── simple-ops.bench.js         # Basic arithmetic timing
+│   ├── function-calls.bench.js     # Mathematical function timing
+│   └── complex-expr.bench.js       # Complex expression timing
 ├── errors/                         # Error handling validation
-│   ├── syntax-errors.test.js      # Invalid syntax cases
-│   ├── runtime-errors.test.js     # Division by zero, etc.
-│   └── type-errors.test.js        # Type mismatch scenarios
+│   ├── syntax-errors.test.js       # Invalid syntax cases
+│   ├── runtime-errors.test.js      # Division by zero, etc.
+│   └── type-errors.test.js         # Type mismatch scenarios
 ├── browser/                        # Cross-browser compatibility
-│   └── compatibility.test.js      # Browser-specific tests
+│   └── compatibility.test.js       # Browser-specific tests
 └── test-runner.js                  # Main test orchestration
 ```
 
@@ -260,7 +259,301 @@ tests/
 - ✅ **Documentation Complete**: Every test case clearly documented
 
 
-### 🔄 Phase 4: Flutter Web Integration *(Planned)*
+### 🔄 Phase 4: Extract to a frontend library *(Planned)*
+**Goal**: Create a reusable frontend library for equations evaluation that works seamlessly across JavaScript/React and Flutter Web projects
+
+#### 📦 **Library Architecture**
+The library will be packaged as:
+- **npm package**: For JavaScript/React projects
+- **pub.dev package**: For Flutter Web projects  
+- **Unified WASM core**: Single WebAssembly module used by both platforms
+
+#### 🏗️ **Implementation Steps**
+
+##### **Step 1: Create Standalone Library Structure**
+```
+parsec-equations-lib/
+├── core/                          # Core WebAssembly files
+│   ├── equations_parser.wasm      # Compiled WASM binary
+│   └── equations_parser.js        # Emscripten JS glue code
+├── js/                            # JavaScript/npm package
+│   ├── package.json               # npm package configuration
+│   ├── index.js                   # Main entry point
+│   ├── equations-evaluator.js     # Clean API wrapper
+│   ├── types.d.ts                 # TypeScript definitions
+│   └── README.md                  # JavaScript usage docs
+├── dart/                          # Dart/Flutter package  
+│   ├── pubspec.yaml               # pub.dev package configuration
+│   ├── lib/
+│   │   ├── equations_evaluator.dart         # Main Dart API
+│   │   ├── src/
+│   │   │   ├── js_interop.dart            # dart:js_interop bindings
+│   │   │   ├── equations_result.dart       # Result data classes
+│   │   │   └── equations_types.dart        # Type definitions
+│   │   └── web/                           # Web-specific assets
+│   │       ├── equations_parser.wasm      # WASM binary
+│   │       └── equations_parser.js        # JS glue code
+│   └── README.md                          # Dart/Flutter usage docs
+├── examples/                              # Usage examples
+│   ├── react-demo/                       # React integration example
+│   ├── vanilla-js-demo/                   # Plain JavaScript example
+│   └── flutter-web-demo/                  # Flutter Web example
+└── README.md                              # Main documentation
+```
+
+##### **Step 2: Extract and Refactor JavaScript API**
+- **Clean up current wrapper**: Simplify the `EquationsParserWrapper` class
+- **Remove HTML dependencies**: Create pure JavaScript library without DOM dependencies
+- **Add TypeScript support**: Generate type definitions for better developer experience
+- **Implement error handling**: Robust error boundaries and meaningful error messages
+- **Add result caching**: Optional caching for repeated calculations
+- **Bundle optimization**: Create minified and non-minified versions
+
+**JavaScript API Example:**
+```javascript
+import { EquationsEvaluator } from 'parsec-equations-lib';
+
+const evaluator = new EquationsEvaluator();
+await evaluator.initialize();
+
+// Basic usage
+const result = evaluator.evaluate('2 + 3 * sin(pi/2)');
+console.log(result.value); // "5"
+console.log(result.type);  // "f" (float)
+
+// Batch evaluation
+const results = evaluator.evaluateBatch([
+  '2 + 2',
+  'sqrt(16)', 
+  'concat("Hello", " World")'
+]);
+```
+
+##### **Step 3: Create Flutter Web Package with dart:js_interop**
+- **Set up dart:js_interop bindings**: Modern Dart-JavaScript interoperability
+- **Create Dart data classes**: Type-safe result objects and error handling
+- **Asset management**: Bundle WASM files with Flutter package
+- **Web-specific service**: Implementation that loads and uses WASM module
+- **Future-based API**: Async/await pattern for Flutter integration
+
+**Dart API Example:**
+```dart
+import 'package:parsec_equations_lib/parsec_equations_lib.dart';
+
+final evaluator = EquationsEvaluator();
+await evaluator.initialize();
+
+// Basic usage
+final result = await evaluator.evaluate('2 + 3 * sin(pi/2)');
+print(result.value); // "5"
+print(result.type);  // EquationType.float
+
+// Type-safe results
+switch (result.type) {
+  case EquationType.integer:
+    final intValue = result.asInt();
+  case EquationType.float:
+    final doubleValue = result.asDouble();
+  case EquationType.string:
+    final stringValue = result.asString();
+  case EquationType.boolean:
+    final boolValue = result.asBool();
+}
+```
+
+##### **Step 4: Package Configuration and Publishing**
+
+**NPM Package (package.json):**
+```json
+{
+  "name": "parsec-equations-lib",
+  "version": "1.0.0",
+  "description": "Fast mathematical expression evaluator powered by WebAssembly",
+  "main": "index.js",
+  "types": "types.d.ts",
+  "files": ["core/", "js/", "types.d.ts"],
+  "keywords": ["math", "equations", "wasm", "calculator", "expressions"],
+  "engines": { "node": ">=16.0.0" },
+  "browser": "js/equations-evaluator.js"
+}
+```
+
+**Pub Package (pubspec.yaml):**
+```yaml
+name: parsec_equations_lib
+version: 1.0.0
+description: Fast mathematical expression evaluator for Flutter Web using WebAssembly
+homepage: https://github.com/your-org/parsec-equations-lib
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: '>=3.10.0'
+
+platforms:
+  web:
+
+dependencies:
+  flutter:
+    sdk: flutter
+  js: ^0.6.7
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+```
+
+##### **Step 5: Cross-Platform Compatibility**
+- **Unified WASM module**: Same WebAssembly binary works in both environments
+- **Consistent API design**: Similar method names and behavior patterns
+- **Error code mapping**: Standardized error types across platforms
+- **Performance optimization**: Efficient memory management and module loading
+- **Browser compatibility**: Support for modern browsers (ES6+ for JS, recent Flutter Web)
+
+#### 🎯 **Flutter Web Integration Details**
+
+##### **dart:js_interop Implementation**
+```dart
+// js_interop.dart
+@JS()
+library equations_js;
+
+import 'dart:js_interop';
+
+@JS('EquationsModule')
+external EquationsModule get equationsModule;
+
+@JS()
+@anonymous
+extension type EquationsModule._(JSObject _) implements JSObject {
+  external JSPromise<JSString> eval_equation(JSString equation);
+  external JSNumber test_equations_parser_loaded();
+}
+
+@JS()
+@anonymous  
+extension type EquationResult._(JSObject _) implements JSObject {
+  external JSString get val;
+  external JSString get type;
+  external JSString? get error;
+}
+```
+
+##### **Flutter Service Layer**
+```dart
+// equations_evaluator.dart
+class EquationsEvaluator {
+  static final EquationsEvaluator _instance = EquationsEvaluator._internal();
+  factory EquationsEvaluator() => _instance;
+  EquationsEvaluator._internal();
+
+  bool _isInitialized = false;
+
+  Future<void> initialize() async {
+    if (_isInitialized) return;
+    
+    // Load WASM module
+    await _loadWasmModule();
+    
+    // Test module
+    final testResult = equationsModule.test_equations_parser_loaded();
+    if (testResult.toDart != 42) {
+      throw EquationsException('Module initialization failed');
+    }
+    
+    _isInitialized = true;
+  }
+
+  Future<EquationResult> evaluate(String equation) async {
+    if (!_isInitialized) {
+      throw EquationsException('Evaluator not initialized');
+    }
+    
+    try {
+      final jsResult = await equationsModule
+          .eval_equation(equation.toJS)
+          .toDart;
+      
+      return EquationResult.fromJson(jsResult.toDart);
+    } catch (e) {
+      throw EquationsException('Evaluation failed: $e');
+    }
+  }
+}
+```
+
+#### ✅ **Benefits for Multi-Platform Development**
+
+1. **Code Reuse**: Same mathematical engine across JavaScript and Dart platforms
+2. **Performance Consistency**: Identical WebAssembly performance in both environments  
+3. **Maintenance Efficiency**: Single WASM core to update and maintain
+4. **Type Safety**: TypeScript definitions for JS, strong typing in Dart
+5. **Easy Integration**: Simple npm install or pub get to add functionality
+6. **Framework Agnostic**: Works with React, Vue, Angular, Flutter, vanilla JS
+
+#### 🚀 **Usage in Target Projects**
+
+##### **React Project Integration**
+```javascript
+// npm install parsec-equations-lib
+import { EquationsEvaluator } from 'parsec-equations-lib';
+
+function CalculatorComponent() {
+  const [evaluator, setEvaluator] = useState(null);
+  
+  useEffect(() => {
+    const init = async () => {
+      const eval = new EquationsEvaluator();
+      await eval.initialize();
+      setEvaluator(eval);
+    };
+    init();
+  }, []);
+
+  const handleCalculate = (equation) => {
+    const result = evaluator.evaluate(equation);
+    setResult(result);
+  };
+}
+```
+
+##### **Flutter Web Project Integration**  
+```dart
+# pubspec.yaml: parsec_equations_lib: ^1.0.0
+
+class CalculatorPage extends StatefulWidget {
+  @override
+  State createState() => _CalculatorPageState();
+}
+
+class _CalculatorPageState extends State<CalculatorPage> {
+  final evaluator = EquationsEvaluator();
+  
+  @override
+  void initState() {
+    super.initState();
+    evaluator.initialize();
+  }
+
+  void _handleCalculate(String equation) async {
+    final result = await evaluator.evaluate(equation);
+    setState(() {
+      _result = result;
+    });
+  }
+}
+```
+
+#### 📋 **Success Criteria**
+- ✅ **NPM Package**: Successfully published and installable via `npm install`
+- ✅ **Pub Package**: Successfully published and installable via `pub get`  
+- ✅ **React Integration**: Works seamlessly in Create React App projects
+- ✅ **Flutter Web Integration**: Works in Flutter Web projects without issues
+- ✅ **Performance**: < 5ms evaluation time for complex expressions
+- ✅ **Bundle Size**: < 2MB total package size including WASM
+- ✅ **Type Safety**: Full TypeScript and Dart type definitions
+- ✅ **Documentation**: Complete API documentation and usage examples
+
+### 🔄 Phase 5: Flutter Web Integration *(Planned)*
 **Goal**: Integrate equations-parser WASM with a small Flutter Web using `dart:js_interop`
 
 **What's planned:**
@@ -270,7 +563,7 @@ tests/
 - Web-specific service implementation
 - Flutter UI for equation input and result display
 
-### 🔄 Phase 5: Cross-Platform Mobile Integration *(Optional)*
+### 🔄 Phase 6: Cross-Platform Mobile Integration *(Optional)*
 **Goal**: Extend Flutter integration to mobile/desktop platforms
 
 **What's planned:**
