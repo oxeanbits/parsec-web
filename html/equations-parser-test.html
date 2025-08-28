@@ -442,89 +442,131 @@
             consoleOutput.innerHTML = '';
         };
 
-        // Status update helper
         function updateStatus(message, type = 'loading') {
             const status = document.getElementById('status');
             status.textContent = message;
             status.className = `status ${type}`;
         }
 
-        // Initialize WebAssembly
         async function initializeEquationsParser() {
             try {
-                updateStatus('🔄 Loading Equations-Parser wrapper...', 'loading');
-                
-                // Import the wrapper
-                const module = await import('../js/equations_parser_wrapper.js');
-                EquationsParserWrapper = module.default;
-
-                updateStatus('🔄 Initializing Equations-Parser WebAssembly module...', 'loading');
-                equationsParser = new EquationsParserWrapper();
-                await equationsParser.initialize();
+                await loadEquationsParserWrapper();
+                await initializeWasmModule();
                 
                 updateStatus('✅ Equations-Parser WebAssembly module ready!', 'ready');
                 
-                // Enable buttons
-                document.getElementById('evalBtn').disabled = false;
-                document.getElementById('clearBtn').disabled = false;
-                document.getElementById('testBtn').disabled = false;
-                
-                // Populate quick tests and function list
-                populateQuickTests();
-                populateFunctionList();
+                enableUserInterface();
+                populateUIComponents();
                 
                 console.log('🎉 All systems ready! Try evaluating some equations.');
                 
             } catch (error) {
-                console.error('Initialization failed:', error);
-                updateStatus(`❌ Failed to load: ${error.message}`, 'error');
+                handleInitializationError(error);
             }
         }
 
-        // Evaluate equation function
+        async function loadEquationsParserWrapper() {
+            updateStatus('🔄 Loading Equations-Parser wrapper...', 'loading');
+            const module = await import('../js/equations_parser_wrapper.js');
+            EquationsParserWrapper = module.default;
+        }
+
+        async function initializeWasmModule() {
+            updateStatus('🔄 Initializing Equations-Parser WebAssembly module...', 'loading');
+            equationsParser = new EquationsParserWrapper();
+            await equationsParser.initialize();
+        }
+
+        function enableUserInterface() {
+            const buttonIds = ['evalBtn', 'clearBtn', 'testBtn'];
+            buttonIds.forEach(buttonId => {
+                document.getElementById(buttonId).disabled = false;
+            });
+        }
+
+        function populateUIComponents() {
+            populateQuickTests();
+            populateFunctionList();
+        }
+
+        function handleInitializationError(error) {
+            console.error('Initialization failed:', error);
+            updateStatus(`❌ Failed to load: ${error.message}`, 'error');
+        }
+
         window.evaluateEquation = function() {
             const input = document.getElementById('equationInput');
             const resultDiv = document.getElementById('evaluationResult');
             
-            if (!input.value.trim()) {
-                resultDiv.innerHTML = '<div class="result error">Please enter an equation</div>';
+            if (!hasValidInput(input)) {
+                displayEmptyInputError(resultDiv);
                 return;
             }
             
             try {
                 const result = equationsParser.evaluateEquation(input.value.trim());
-                
-                if (result.success) {
-                    resultDiv.innerHTML = `
-                        <div class="result success">
-                            <div class="result-value">Result: ${result.value}</div>
-                            <div class="result-meta">
-                                Type: ${result.type} | Equation: ${result.equation}
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    resultDiv.innerHTML = `
-                        <div class="result error">
-                            <div class="result-value">Error: ${result.error}</div>
-                            <div class="result-meta">Equation: ${result.equation}</div>
-                        </div>
-                    `;
-                }
+                displayEvaluationResult(result, resultDiv);
             } catch (error) {
-                resultDiv.innerHTML = `
-                    <div class="result error">
-                        <div class="result-value">JavaScript Error: ${error.message}</div>
-                    </div>
-                `;
+                displayJavaScriptError(error, resultDiv);
             }
         };
 
-        // Clear result function
+        function hasValidInput(input) {
+            return input.value.trim() !== '';
+        }
+
+        function displayEmptyInputError(resultDiv) {
+            resultDiv.innerHTML = '<div class="result error">Please enter an equation</div>';
+        }
+
+        function displayEvaluationResult(result, resultDiv) {
+            if (result.success) {
+                displaySuccessResult(result, resultDiv);
+            } else {
+                displayErrorResult(result, resultDiv);
+            }
+        }
+
+        function displaySuccessResult(result, resultDiv) {
+            resultDiv.innerHTML = `
+                <div class="result success">
+                    <div class="result-value">Result: ${result.value}</div>
+                    <div class="result-meta">
+                        Type: ${result.type} | Equation: ${result.equation}
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayErrorResult(result, resultDiv) {
+            resultDiv.innerHTML = `
+                <div class="result error">
+                    <div class="result-value">Error: ${result.error}</div>
+                    <div class="result-meta">Equation: ${result.equation}</div>
+                </div>
+            `;
+        }
+
+        function displayJavaScriptError(error, resultDiv) {
+            resultDiv.innerHTML = `
+                <div class="result error">
+                    <div class="result-value">JavaScript Error: ${error.message}</div>
+                </div>
+            `;
+        }
+
         window.clearResult = function() {
-            document.getElementById('evaluationResult').innerHTML = '';
-            document.getElementById('equationInput').value = '';
+            clearEvaluationResult();
+            clearEquationInput();
         };
+
+        function clearEvaluationResult() {
+            document.getElementById('evaluationResult').innerHTML = '';
+        }
+
+        function clearEquationInput() {
+            document.getElementById('equationInput').value = '';
+        }
 
         // Quick test examples
         function populateQuickTests() {
@@ -582,34 +624,62 @@
         // Store original function data for search
         let allFunctions = {};
 
-        // Populate function list
         function populateFunctionList() {
             const functions = equationsParser.getSupportedFunctions();
-            allFunctions = functions; // Store for search
+            allFunctions = functions;
             const functionListDiv = document.getElementById('functionList');
             
+            clearFunctionList(functionListDiv);
+            renderFunctionCategories(functions, functionListDiv);
+        }
+
+        function clearFunctionList(functionListDiv) {
             functionListDiv.innerHTML = '';
-            
+        }
+
+        function renderFunctionCategories(functions, functionListDiv) {
             Object.entries(functions).forEach(([category, funcs]) => {
-                const categoryDiv = document.createElement('div');
-                categoryDiv.className = 'function-category';
-                categoryDiv.setAttribute('data-category', category);
-                
-                const titleElement = document.createElement('h3');
-                titleElement.innerHTML = `${categoryIcons[category] || '📋'} ${category.charAt(0).toUpperCase() + category.slice(1)}`;
-                categoryDiv.appendChild(titleElement);
-                
-                const listElement = document.createElement('ul');
-                funcs.forEach(func => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = func;
-                    listItem.onclick = () => useFunctionExample(extractFunctionName(func));
-                    listElement.appendChild(listItem);
-                });
-                
-                categoryDiv.appendChild(listElement);
+                const categoryDiv = createFunctionCategoryDiv(category, funcs);
                 functionListDiv.appendChild(categoryDiv);
             });
+        }
+
+        function createFunctionCategoryDiv(category, functions) {
+            const categoryDiv = document.createElement('div');
+            categoryDiv.className = 'function-category';
+            categoryDiv.setAttribute('data-category', category);
+            
+            const titleElement = createCategoryTitle(category);
+            const listElement = createFunctionList(functions);
+            
+            categoryDiv.appendChild(titleElement);
+            categoryDiv.appendChild(listElement);
+            
+            return categoryDiv;
+        }
+
+        function createCategoryTitle(category) {
+            const titleElement = document.createElement('h3');
+            const categoryIcon = categoryIcons[category] || '📋';
+            const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
+            titleElement.innerHTML = `${categoryIcon} ${categoryName}`;
+            return titleElement;
+        }
+
+        function createFunctionList(functions) {
+            const listElement = document.createElement('ul');
+            functions.forEach(func => {
+                const listItem = createFunctionListItem(func);
+                listElement.appendChild(listItem);
+            });
+            return listElement;
+        }
+
+        function createFunctionListItem(func) {
+            const listItem = document.createElement('li');
+            listItem.textContent = func;
+            listItem.onclick = () => useFunctionExample(extractFunctionName(func));
+            return listItem;
         }
 
         // Extract function name for examples (remove description)
@@ -721,69 +791,116 @@
             document.getElementById('equationInput').focus();
         };
 
-        // Filter functions based on search
         window.filterFunctions = function() {
-            const searchTerm = document.getElementById('functionSearch').value.toLowerCase();
-            const categories = document.querySelectorAll('.function-category');
+            const searchTerm = getSearchTerm();
+            const categories = getAllFunctionCategories();
             
             categories.forEach(category => {
-                const categoryName = category.dataset.category.toLowerCase();
-                const functions = category.querySelectorAll('li');
-                let hasVisibleFunctions = false;
-                
-                functions.forEach(func => {
-                    const funcText = func.textContent.toLowerCase();
-                    const isVisible = funcText.includes(searchTerm) || categoryName.includes(searchTerm);
-                    func.style.display = isVisible ? 'block' : 'none';
-                    if (isVisible) hasVisibleFunctions = true;
-                });
-                
-                category.style.display = hasVisibleFunctions ? 'block' : 'none';
+                const hasVisibleFunctions = filterCategoryFunctions(category, searchTerm);
+                toggleCategoryVisibility(category, hasVisibleFunctions);
             });
         };
 
-        // Run comprehensive tests
+        function getSearchTerm() {
+            return document.getElementById('functionSearch').value.toLowerCase();
+        }
+
+        function getAllFunctionCategories() {
+            return document.querySelectorAll('.function-category');
+        }
+
+        function filterCategoryFunctions(category, searchTerm) {
+            const categoryName = category.dataset.category.toLowerCase();
+            const functions = category.querySelectorAll('li');
+            let hasVisibleFunctions = false;
+            
+            functions.forEach(func => {
+                const isVisible = shouldShowFunction(func, searchTerm, categoryName);
+                func.style.display = isVisible ? 'block' : 'none';
+                if (isVisible) hasVisibleFunctions = true;
+            });
+            
+            return hasVisibleFunctions;
+        }
+
+        function shouldShowFunction(func, searchTerm, categoryName) {
+            const funcText = func.textContent.toLowerCase();
+            return funcText.includes(searchTerm) || categoryName.includes(searchTerm);
+        }
+
+        function toggleCategoryVisibility(category, hasVisibleFunctions) {
+            category.style.display = hasVisibleFunctions ? 'block' : 'none';
+        }
+
         window.runComprehensiveTests = async function() {
             const testBtn = document.getElementById('testBtn');
             const resultsDiv = document.getElementById('testResults');
             
-            testBtn.disabled = true;
-            testBtn.textContent = 'Running Tests...';
-            resultsDiv.innerHTML = '<div class="status loading">🧪 Running comprehensive test suite...</div>';
+            prepareTestInterface(testBtn, resultsDiv);
             
             try {
                 const results = await equationsParser.runComprehensiveTests();
-                
-                const summaryHtml = `
-                    <div class="test-summary">
-                        <div class="test-stat passed">${results.passed} Passed</div>
-                        <div class="test-stat failed">${results.failed} Failed</div>
-                    </div>
-                `;
-                
-                const detailsHtml = results.tests.map(test => `
-                    <div class="test-item ${test.passed ? 'passed' : 'failed'}">
-                        <strong>${test.description}</strong><br>
-                        Equation: ${test.equation}<br>
-                        Expected: ${test.expected} | Actual: ${test.actual}
-                        ${test.error ? `<br>Error: ${test.error}` : ''}
-                    </div>
-                `).join('');
-                
-                resultsDiv.innerHTML = `
-                    <div class="test-results">
-                        ${summaryHtml}
-                        <div class="test-details">${detailsHtml}</div>
-                    </div>
-                `;
-                
+                displayTestResults(results, resultsDiv);
             } catch (error) {
-                resultsDiv.innerHTML = `<div class="result error">Test execution failed: ${error.message}</div>`;
+                displayTestExecutionError(error, resultsDiv);
             } finally {
-                testBtn.disabled = false;
-                testBtn.textContent = 'Run All Tests';
+                resetTestInterface(testBtn);
             }
         };
+
+        function prepareTestInterface(testBtn, resultsDiv) {
+            testBtn.disabled = true;
+            testBtn.textContent = 'Running Tests...';
+            resultsDiv.innerHTML = '<div class="status loading">🧪 Running comprehensive test suite...</div>';
+        }
+
+        function displayTestResults(results, resultsDiv) {
+            const summaryHtml = createTestSummaryHtml(results);
+            const detailsHtml = createTestDetailsHtml(results);
+            
+            resultsDiv.innerHTML = `
+                <div class="test-results">
+                    ${summaryHtml}
+                    <div class="test-details">${detailsHtml}</div>
+                </div>
+            `;
+        }
+
+        function createTestSummaryHtml(results) {
+            return `
+                <div class="test-summary">
+                    <div class="test-stat passed">${results.passed} Passed</div>
+                    <div class="test-stat failed">${results.failed} Failed</div>
+                </div>
+            `;
+        }
+
+        function createTestDetailsHtml(results) {
+            return results.tests.map(test => createTestItemHtml(test)).join('');
+        }
+
+        function createTestItemHtml(test) {
+            const statusClass = test.passed ? 'passed' : 'failed';
+            const errorInfo = test.error ? `<br>Error: ${test.error}` : '';
+            
+            return `
+                <div class="test-item ${statusClass}">
+                    <strong>${test.description}</strong><br>
+                    Equation: ${test.equation}<br>
+                    Expected: ${test.expected} | Actual: ${test.actual}
+                    ${errorInfo}
+                </div>
+            `;
+        }
+
+        function displayTestExecutionError(error, resultsDiv) {
+            resultsDiv.innerHTML = `<div class="result error">Test execution failed: ${error.message}</div>`;
+        }
+
+        function resetTestInterface(testBtn) {
+            testBtn.disabled = false;
+            testBtn.textContent = 'Run All Tests';
+        }
 
         // Allow Enter key to evaluate equation
         document.addEventListener('DOMContentLoaded', function() {

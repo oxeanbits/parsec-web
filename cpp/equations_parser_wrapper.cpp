@@ -23,19 +23,17 @@
  * Error:   {"error": "Division by zero"}
  */
 std::string eval_equation(const std::string& equation) {
-    std::cout << "C++: Evaluating equation: " << equation << std::endl;
+    logEquationEvaluation(equation);
     
     try {
-        std::string result = EquationsParser::CalcJson(equation);
-        std::cout << "C++: Result: " << result << std::endl;
+        const std::string result = evaluateEquationSafely(equation);
+        logSuccessfulEvaluation(result);
         return result;
         
     } catch (const std::exception& e) {
-        std::cerr << "C++: Exception caught: " << e.what() << std::endl;
-        return "{\"error\": \"C++ exception: " + std::string(e.what()) + "\"}";
+        return handleKnownException(e);
     } catch (...) {
-        std::cerr << "C++: Unknown exception caught" << std::endl;
-        return "{\"error\": \"Unknown C++ exception occurred\"}";
+        return handleUnknownException();
     }
 }
 
@@ -44,20 +42,66 @@ std::string eval_equation(const std::string& equation) {
  * @return Test confirmation number
  */
 int test_equations_parser_loaded() {
-    std::cout << "C++: Equations-parser WASM module loaded successfully!" << std::endl;
+    logModuleLoadSuccess();
     
-    // Test basic functionality
     try {
-        std::string test_result = EquationsParser::Calc("2 + 2");
-        std::cout << "C++: Basic test (2 + 2) = " << test_result << std::endl;
-        return 42; // Success indicator
+        return runBasicFunctionalityTest();
     } catch (...) {
-        std::cerr << "C++: Test failed - equations-parser not working properly" << std::endl;
-        return -1; // Failure indicator
+        logTestFailure();
+        return getFailureIndicator();
     }
 }
 
-// C++ style bindings using Embind
+void logEquationEvaluation(const std::string& equation) {
+    std::cout << "C++: Evaluating equation: " << equation << std::endl;
+}
+
+std::string evaluateEquationSafely(const std::string& equation) {
+    return EquationsParser::CalcJson(equation);
+}
+
+void logSuccessfulEvaluation(const std::string& result) {
+    std::cout << "C++: Result: " << result << std::endl;
+}
+
+std::string handleKnownException(const std::exception& e) {
+    std::cerr << "C++: Exception caught: " << e.what() << std::endl;
+    return createErrorJson("C++ exception: " + std::string(e.what()));
+}
+
+std::string handleUnknownException() {
+    std::cerr << "C++: Unknown exception caught" << std::endl;
+    return createErrorJson("Unknown C++ exception occurred");
+}
+
+std::string createErrorJson(const std::string& errorMessage) {
+    return "{\"error\": \"" + errorMessage + "\"}";
+}
+
+void logModuleLoadSuccess() {
+    std::cout << "C++: Equations-parser WASM module loaded successfully!" << std::endl;
+}
+
+int runBasicFunctionalityTest() {
+    const std::string TEST_EQUATION = "2 + 2";
+    const std::string testResult = EquationsParser::Calc(TEST_EQUATION);
+    
+    std::cout << "C++: Basic test (" << TEST_EQUATION << ") = " << testResult << std::endl;
+    return getSuccessIndicator();
+}
+
+void logTestFailure() {
+    std::cerr << "C++: Test failed - equations-parser not working properly" << std::endl;
+}
+
+int getSuccessIndicator() {
+    return 42;
+}
+
+int getFailureIndicator() {
+    return -1;
+}
+
 using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(equations_parser_module) {

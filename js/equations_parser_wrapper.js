@@ -19,7 +19,7 @@ class EquationsParserWrapper {
      * @returns {Promise<void>} Promise that resolves when module is loaded
      */
     async initialize(wasmPath = '../wasm/equations_parser.js') {
-        if (this.loadingPromise) {
+        if (this.isAlreadyLoading()) {
             return this.loadingPromise;
         }
 
@@ -33,46 +33,19 @@ class EquationsParserWrapper {
      */
     async _loadModule(wasmPath) {
         try {
-            console.log('🔄 Loading Equations-Parser WebAssembly module from:', wasmPath);
+            this._logModuleLoadStart(wasmPath);
             
-            // Import the Emscripten-generated ES6 module
-            const moduleImport = await import(wasmPath);
-            console.log('🔍 Module import successful');
+            const moduleFactory = await this._importWasmModule(wasmPath);
+            this.module = await this._initializeModule(moduleFactory);
             
-            // With EXPORT_ES6=1, Emscripten exports the factory as default
-            let moduleFactory = moduleImport.default;
-            
-            if (typeof moduleFactory !== 'function') {
-                console.log('🔍 Available exports:', Object.keys(moduleImport));
-                throw new Error(`Expected factory function, got ${typeof moduleFactory}`);
-            }
-            
-            console.log('🔄 Initializing WebAssembly module...');
-            
-            // Initialize the module with the factory function
-            this.module = await moduleFactory();
-            
-            console.log('🔍 Module initialized successfully');
-            
-            // Test if the module loaded correctly
-            if (typeof this.module.test_equations_parser_loaded !== 'function') {
-                console.log('Available module functions:', Object.keys(this.module));
-                throw new Error('test_equations_parser_loaded function not found in module');
-            }
-            
-            const testResult = this.module.test_equations_parser_loaded();
-            if (testResult !== 42) {
-                throw new Error(`Equations-parser test failed - expected 42, got ${testResult}`);
-            }
+            this._validateModuleLoaded();
+            this._runModuleTest();
             
             this.isLoaded = true;
-            console.log('✅ Equations-Parser WebAssembly module loaded successfully');
-            console.log('🧪 Module test result:', testResult);
+            this._logModuleLoadSuccess();
             
         } catch (error) {
-            console.error('❌ Failed to load Equations-Parser WebAssembly module:', error);
-            console.error('Error details:', error);
-            throw new Error(`Equations-Parser WebAssembly module loading failed: ${error.message}`);
+            this._handleModuleLoadError(error);
         }
     }
 
@@ -110,51 +83,22 @@ class EquationsParserWrapper {
      * evaluateEquation("5 / 0") // → {error: "Division by zero", success: false}
      */
     evaluateEquation(equation) {
-        this._checkReady();
+        this._ensureModuleReady();
         
         try {
-            // Input validation
-            if (typeof equation !== 'string') {
-                throw new Error('Equation must be a string');
-            }
-            
-            if (!equation.trim()) {
-                throw new Error('Equation cannot be empty');
-            }
+            this._validateEquationInput(equation);
             
             console.log(`🧮 JS: Evaluating equation: "${equation}"`);
             
-            // Call the C++ function which returns JSON
             const jsonResult = this.module.eval_equation(equation);
             console.log(`🧮 JS: Raw result from C++: ${jsonResult}`);
             
-            // Parse the JSON response
             const parsedResult = JSON.parse(jsonResult);
             
-            if (parsedResult.error) {
-                console.log(`❌ JS: Equation evaluation error: ${parsedResult.error}`);
-                return {
-                    error: parsedResult.error,
-                    success: false,
-                    equation: equation
-                };
-            } else {
-                console.log(`✅ JS: Equation evaluated successfully: ${parsedResult.val} (type: ${parsedResult.type})`);
-                return {
-                    value: parsedResult.val,
-                    type: parsedResult.type,
-                    success: true,
-                    equation: equation
-                };
-            }
+            return this._createEvaluationResult(parsedResult, equation);
             
         } catch (error) {
-            console.error('❌ Error in evaluateEquation:', error);
-            return {
-                error: `JavaScript evaluation error: ${error.message}`,
-                success: false,
-                equation: equation
-            };
+            return this._handleEvaluationError(error, equation);
         }
     }
 
@@ -316,17 +260,31 @@ class EquationsParserWrapper {
      * @returns {Object} Test results with success/failure information
      */
     async runComprehensiveTests() {
-        this._checkReady();
+        this._ensureModuleReady();
         
         console.log('🧪 Running comprehensive equations-parser tests...');
-        const results = {
+        const results = this._createTestResultsContainer();
+        const testCases = this._getTestCases();
+
+        for (const testCase of testCases) {
+            this._runSingleTest(testCase, results);
+        }
+
+        console.log(`🧪 Test results: ${results.passed} passed, ${results.failed} failed`);
+        return results;
+    }
+
+    _createTestResultsContainer() {
+        return {
             passed: 0,
             failed: 0,
             tests: [],
             errors: []
         };
+    }
 
-        const testCases = [
+    _getTestCases() {
+        return [
             // Basic arithmetic
             { equation: '2 + 3', expected: '5', description: 'Basic addition' },
             { equation: '10 - 4', expected: '6', description: 'Basic subtraction' },
@@ -343,78 +301,193 @@ class EquationsParserWrapper {
             { equation: 'abs(-5)', expected: '5', description: 'Absolute value' },
             { equation: 'round(3.6)', expected: '4', description: 'Rounding function' },
             
-            // String functions (if supported)
+            // String functions
             { equation: 'length("test")', expected: '4', description: 'String length' },
             
             // Conditional expressions
             { equation: '5 > 3', expected: 'true', description: 'Greater than comparison', allowBooleanString: true },
             { equation: '2 < 1', expected: 'false', description: 'Less than comparison', allowBooleanString: true },
         ];
+    }
 
-        for (const testCase of testCases) {
-            try {
-                const result = this.evaluateEquation(testCase.equation);
-                const testResult = {
-                    equation: testCase.equation,
-                    description: testCase.description,
-                    expected: testCase.expected,
-                    actual: result.success ? result.value : result.error,
-                    passed: false
-                };
+    _runSingleTest(testCase, results) {
+        try {
+            const result = this.evaluateEquation(testCase.equation);
+            const testResult = this._createTestResult(testCase, result);
+            
+            this._evaluateTestResult(testResult, testCase, result);
+            this._recordTestResult(testResult, results);
+            
+        } catch (error) {
+            this._handleTestError(testCase, error, results);
+        }
+    }
 
-                if (result.success) {
-                    // Handle different value formats (some might be "1.000000" vs "1")
-                    const actualValue = result.value.toString();
-                    const expectedValue = testCase.expected.toString();
-                    
-                    if (testCase.allowBooleanString) {
-                        // For boolean comparisons, accept various formats
-                        testResult.passed = actualValue.toLowerCase() === expectedValue.toLowerCase() ||
-                                          (actualValue === '1' && expectedValue === 'true') ||
-                                          (actualValue === '0' && expectedValue === 'false');
-                    } else {
-                        // For numeric comparisons, handle floating point precision
-                        const actualNum = parseFloat(actualValue);
-                        const expectedNum = parseFloat(expectedValue);
-                        
-                        if (!isNaN(actualNum) && !isNaN(expectedNum)) {
-                            testResult.passed = Math.abs(actualNum - expectedNum) < 0.0001;
-                        } else {
-                            testResult.passed = actualValue === expectedValue;
-                        }
-                    }
-                } else {
-                    testResult.passed = false;
-                    testResult.error = result.error;
-                }
+    _createTestResult(testCase, result) {
+        return {
+            equation: testCase.equation,
+            description: testCase.description,
+            expected: testCase.expected,
+            actual: result.success ? result.value : result.error,
+            passed: false
+        };
+    }
 
-                if (testResult.passed) {
-                    results.passed++;
-                } else {
-                    results.failed++;
-                    results.errors.push(`${testCase.description}: Expected ${testCase.expected}, got ${testResult.actual}`);
-                }
-
-                results.tests.push(testResult);
-
-            } catch (error) {
-                results.failed++;
-                results.errors.push(`${testCase.description}: Test execution error - ${error.message}`);
-            }
+    _evaluateTestResult(testResult, testCase, result) {
+        if (!result.success) {
+            testResult.passed = false;
+            testResult.error = result.error;
+            return;
         }
 
-        console.log(`🧪 Test results: ${results.passed} passed, ${results.failed} failed`);
-        return results;
+        const actualValue = result.value.toString();
+        const expectedValue = testCase.expected.toString();
+        
+        testResult.passed = testCase.allowBooleanString 
+            ? this._compareBooleanValues(actualValue, expectedValue)
+            : this._compareValues(actualValue, expectedValue);
+    }
+
+    _compareBooleanValues(actualValue, expectedValue) {
+        return actualValue.toLowerCase() === expectedValue.toLowerCase() ||
+               (actualValue === '1' && expectedValue === 'true') ||
+               (actualValue === '0' && expectedValue === 'false');
+    }
+
+    _compareValues(actualValue, expectedValue) {
+        const actualNum = parseFloat(actualValue);
+        const expectedNum = parseFloat(expectedValue);
+        
+        if (!isNaN(actualNum) && !isNaN(expectedNum)) {
+            const PRECISION_THRESHOLD = 0.0001;
+            return Math.abs(actualNum - expectedNum) < PRECISION_THRESHOLD;
+        }
+        
+        return actualValue === expectedValue;
+    }
+
+    _recordTestResult(testResult, results) {
+        if (testResult.passed) {
+            results.passed++;
+        } else {
+            results.failed++;
+            results.errors.push(`${testResult.description}: Expected ${testResult.expected}, got ${testResult.actual}`);
+        }
+
+        results.tests.push(testResult);
+    }
+
+    _handleTestError(testCase, error, results) {
+        results.failed++;
+        results.errors.push(`${testCase.description}: Test execution error - ${error.message}`);
     }
 
     /**
      * Check if module is ready, throw error if not
      * @private
      */
-    _checkReady() {
+    _ensureModuleReady() {
         if (!this.isReady()) {
             throw new Error('Equations-Parser WebAssembly module is not loaded. Call initialize() first.');
         }
+    }
+
+    isAlreadyLoading() {
+        return this.loadingPromise !== null;
+    }
+
+    _logModuleLoadStart(wasmPath) {
+        console.log('🔄 Loading Equations-Parser WebAssembly module from:', wasmPath);
+    }
+
+    async _importWasmModule(wasmPath) {
+        const moduleImport = await import(wasmPath);
+        console.log('🔍 Module import successful');
+        
+        const moduleFactory = moduleImport.default;
+        
+        if (typeof moduleFactory !== 'function') {
+            console.log('🔍 Available exports:', Object.keys(moduleImport));
+            throw new Error(`Expected factory function, got ${typeof moduleFactory}`);
+        }
+        
+        return moduleFactory;
+    }
+
+    async _initializeModule(moduleFactory) {
+        console.log('🔄 Initializing WebAssembly module...');
+        const module = await moduleFactory();
+        console.log('🔍 Module initialized successfully');
+        return module;
+    }
+
+    _validateModuleLoaded() {
+        if (typeof this.module.test_equations_parser_loaded !== 'function') {
+            console.log('Available module functions:', Object.keys(this.module));
+            throw new Error('test_equations_parser_loaded function not found in module');
+        }
+    }
+
+    _runModuleTest() {
+        const EXPECTED_TEST_RESULT = 42;
+        const testResult = this.module.test_equations_parser_loaded();
+        
+        if (testResult !== EXPECTED_TEST_RESULT) {
+            throw new Error(`Equations-parser test failed - expected ${EXPECTED_TEST_RESULT}, got ${testResult}`);
+        }
+    }
+
+    _logModuleLoadSuccess() {
+        console.log('✅ Equations-Parser WebAssembly module loaded successfully');
+        console.log('🧪 Module test result: 42');
+    }
+
+    _handleModuleLoadError(error) {
+        console.error('❌ Failed to load Equations-Parser WebAssembly module:', error);
+        console.error('Error details:', error);
+        throw new Error(`Equations-Parser WebAssembly module loading failed: ${error.message}`);
+    }
+
+    _validateEquationInput(equation) {
+        if (typeof equation !== 'string') {
+            throw new Error('Equation must be a string');
+        }
+        
+        if (!equation.trim()) {
+            throw new Error('Equation cannot be empty');
+        }
+    }
+
+    _createEvaluationResult(parsedResult, equation) {
+        if (parsedResult.error) {
+            console.log(`❌ JS: Equation evaluation error: ${parsedResult.error}`);
+            return this._createErrorResult(parsedResult.error, equation);
+        }
+        
+        console.log(`✅ JS: Equation evaluated successfully: ${parsedResult.val} (type: ${parsedResult.type})`);
+        return this._createSuccessResult(parsedResult.val, parsedResult.type, equation);
+    }
+
+    _createSuccessResult(value, type, equation) {
+        return {
+            value,
+            type,
+            success: true,
+            equation
+        };
+    }
+
+    _createErrorResult(error, equation) {
+        return {
+            error,
+            success: false,
+            equation
+        };
+    }
+
+    _handleEvaluationError(error, equation) {
+        console.error('❌ Error in evaluateEquation:', error);
+        return this._createErrorResult(`JavaScript evaluation error: ${error.message}`, equation);
     }
 }
 
