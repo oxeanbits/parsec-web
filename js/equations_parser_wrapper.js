@@ -164,17 +164,150 @@ class EquationsParserWrapper {
      */
     getSupportedFunctions() {
         return {
-            arithmetic: ['+ (add)', '- (subtract)', '* (multiply)', '/ (divide)', '^ (power)', '% (modulo)'],
-            trigonometric: ['sin', 'cos', 'tan', 'asin', 'acos', 'atan', 'sinh', 'cosh', 'tanh', 'asinh', 'acosh', 'atanh'],
-            logarithmic: ['ln (natural log)', 'log (base 10)', 'log10', 'exp (exponential)'],
-            mathematical: ['abs (absolute)', 'sqrt (square root)', 'cbrt (cube root)', 'pow (power)', 'round', 'ceil', 'floor'],
-            string: ['concat', 'length', 'toupper', 'tolower', 'left', 'right', 'str2number'],
-            complex: ['real', 'imag', 'conj', 'arg', 'norm'],
-            array: ['sizeof', 'eye', 'ones', 'zeros'],
-            date: ['current_date', 'daysdiff', 'hoursdiff'],
-            conditional: ['? : (ternary operator)', '> < >= <= == != (comparison)', '&& || ! (logical)'],
-            constants: ['pi', 'e'],
-            aggregation: ['min', 'max', 'sum', 'avg']
+            // Basic arithmetic operators
+            arithmetic: [
+                '+ (addition)', '- (subtraction)', '* (multiplication)', '/ (division)', 
+                '^ (power)', '% (modulo)', '+= -= *= /= (assignment operators)'
+            ],
+            
+            // Trigonometric functions
+            trigonometric: [
+                'sin(x) - sine function',
+                'cos(x) - cosine function', 
+                'tan(x) - tangent function',
+                'asin(x) - arc sine',
+                'acos(x) - arc cosine',
+                'atan(x) - arc tangent',
+                'atan2(y,x) - arc tangent with quadrant fix'
+            ],
+            
+            // Hyperbolic functions
+            hyperbolic: [
+                'sinh(x) - hyperbolic sine',
+                'cosh(x) - hyperbolic cosine',
+                'tanh(x) - hyperbolic tangent',
+                'asinh(x) - inverse hyperbolic sine',
+                'acosh(x) - inverse hyperbolic cosine',
+                'atanh(x) - inverse hyperbolic tangent'
+            ],
+            
+            // Logarithmic and exponential functions
+            logarithmic: [
+                'ln(x) - natural logarithm',
+                'log(x) - natural logarithm',
+                'log10(x) - logarithm base 10',
+                'log2(x) - logarithm base 2',
+                'exp(x) - exponential function (e^x)'
+            ],
+            
+            // Root and power functions
+            mathematical: [
+                'abs(x) - absolute value',
+                'sqrt(x) - square root',
+                'cbrt(x) - cube root',
+                'pow(x,y) - raise x to the power of y',
+                'hypot(x,y) - length of vector (x,y)',
+                'round(x) - round to nearest integer',
+                'round_decimal(x,y) - round x to y decimal places',
+                'fmod(x,y) - floating point remainder of x/y',
+                'remainder(x,y) - IEEE remainder of x/y'
+            ],
+            
+            // String manipulation functions
+            string: [
+                'concat(s1,s2) - concatenate two strings',
+                'length(s) - string length',
+                'toupper(s) - convert to uppercase',
+                'tolower(s) - convert to lowercase',
+                'left(s,n) - get leftmost n characters',
+                'right(s,n) - get rightmost n characters',
+                'str2number(s) - convert string to number',
+                'number(x) - convert value to number',
+                'string(x) - convert value to string',
+                'contains(s1,s2) - check if s1 contains s2',
+                'link(text,url) - create HTML link',
+                'link(text,url,download) - create download link',
+                'default_value(val,default) - return default if val is null',
+                'calculate(s) - evaluate equation in string'
+            ],
+            
+            // Matrix functions
+            matrix: [
+                'ones(rows,cols) - matrix of ones',
+                'zeros(rows,cols) - matrix of zeros',
+                'eye(n) - identity matrix',
+                'size(matrix) - matrix dimensions',
+                "transpose - matrix transpose operator (')"
+            ],
+            
+            // Array/vector functions
+            array: [
+                'sizeof(a) - number of elements in array'
+            ],
+            
+            // Date functions
+            date: [
+                'current_date() - current date (YYYY-MM-DD)',
+                'daysdiff(date1,date2) - difference in days',
+                'hoursdiff(datetime1,datetime2) - difference in hours',
+                'add_days(date,days) - add days to date',
+                'weekyear(date) - week number of year',
+                'weekday(date) - day of week (0=Sunday)',
+                'weekday(date,locale) - localized day name'
+            ],
+            
+            // Time functions
+            time: [
+                'current_time() - current time (HH:MM:SS)',
+                'current_time(offset) - current time with GMT offset',
+                'timediff(time1,time2) - difference in hours'
+            ],
+            
+            // Utility functions
+            utility: [
+                'mask(pattern,number) - apply formatting mask',
+                'regex(text,pattern) - regex pattern matching',
+                'parserid() - parser version information'
+            ],
+            
+            // Comparison and logical operators
+            comparison: [
+                '> < >= <= (comparison operators)',
+                '== != (equality operators)',
+                '&& || (logical AND, OR)',
+                'and or (alternative logical operators)',
+                '! (logical NOT)',
+                '& | (bitwise AND, OR)',
+                '<< >> (bit shift operators)'
+            ],
+            
+            // Conditional expressions
+            conditional: [
+                '? : (ternary operator)',
+                'condition ? true_value : false_value'
+            ],
+            
+            // Mathematical constants
+            constants: [
+                'pi - π (3.14159...)',
+                'e - Euler\'s number (2.71828...)',
+                'null - null value'
+            ],
+            
+            // Aggregation functions
+            aggregation: [
+                'min(x1,x2,...) - minimum value',
+                'max(x1,x2,...) - maximum value',
+                'sum(x1,x2,...) - sum of all values',
+                'avg(x1,x2,...) - average of all values'
+            ],
+            
+            // Type casting
+            casting: [
+                '(float) - cast to floating point',
+                '(int) - cast to integer',
+                '! (factorial) - postfix operator'
+            ]
         };
     }
 
