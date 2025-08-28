@@ -302,7 +302,7 @@ parsec-equations-lib/
 ```
 
 ##### **Step 2: Extract and Refactor JavaScript API**
-- **Clean up current wrapper**: Simplify the `EquationsParserWrapper` class
+- **Clean up current wrapper**: Simplify the `Parsec` class
 - **Remove HTML dependencies**: Create pure JavaScript library without DOM dependencies
 - **Add TypeScript support**: Generate type definitions for better developer experience
 - **Implement error handling**: Robust error boundaries and meaningful error messages

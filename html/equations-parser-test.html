@@ -413,8 +413,8 @@
 
     <script type="module">
         // Import our wrapper
-        let EquationsParserWrapper;
-        let equationsParser;
+        let Parsec;
+        let parsec;
 
         // Console capture for display
         const originalLog = console.log;
@@ -450,7 +450,7 @@
 
         async function initializeEquationsParser() {
             try {
-                await loadEquationsParserWrapper();
+                await loadParsecWrapper();
                 await initializeWasmModule();
                 
                 updateStatus('✅ Equations-Parser WebAssembly module ready!', 'ready');
@@ -465,16 +465,16 @@
             }
         }
 
-        async function loadEquationsParserWrapper() {
+        async function loadParsecWrapper() {
             updateStatus('🔄 Loading Equations-Parser wrapper...', 'loading');
             const module = await import('../js/equations_parser_wrapper.js');
-            EquationsParserWrapper = module.default;
+            Parsec = module.default;
         }
 
         async function initializeWasmModule() {
             updateStatus('🔄 Initializing Equations-Parser WebAssembly module...', 'loading');
-            equationsParser = new EquationsParserWrapper();
-            await equationsParser.initialize();
+            parsec = new Parsec();
+            await parsec.initialize();
         }
 
         function enableUserInterface() {
@@ -504,7 +504,7 @@
             }
             
             try {
-                const result = equationsParser.evaluateEquation(input.value.trim());
+                const result = parsec.eval(input.value.trim());
                 displayEvaluationResult(result, resultDiv);
             } catch (error) {
                 displayJavaScriptError(error, resultDiv);
@@ -625,7 +625,7 @@
         let allFunctions = {};
 
         function populateFunctionList() {
-            const functions = equationsParser.getSupportedFunctions();
+            const functions = parsec.getSupportedFunctions();
             allFunctions = functions;
             const functionListDiv = document.getElementById('functionList');
             
@@ -839,7 +839,7 @@
             prepareTestInterface(testBtn, resultsDiv);
             
             try {
-                const results = await equationsParser.runComprehensiveTests();
+                const results = await parsec.runComprehensiveTests();
                 displayTestResults(results, resultsDiv);
             } catch (error) {
                 displayTestExecutionError(error, resultsDiv);

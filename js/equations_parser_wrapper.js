@@ -6,7 +6,7 @@
  * type-aware equation evaluation with comprehensive mathematical functions.
  */
 
-class EquationsParserWrapper {
+class Parsec {
     constructor() {
         this.module = null;
         this.isLoaded = false;
@@ -64,25 +64,25 @@ class EquationsParserWrapper {
      * 
      * @example
      * // Basic arithmetic
-     * evaluateEquation("2 + 3 * 4") // → {value: "14", type: "i", success: true}
+     * eval("2 + 3 * 4") // → {value: "14", type: "i", success: true}
      * 
      * @example
      * // Trigonometric functions
-     * evaluateEquation("sin(pi/2)") // → {value: "1", type: "f", success: true}
+     * eval("sin(pi/2)") // → {value: "1", type: "f", success: true}
      * 
      * @example
      * // String functions
-     * evaluateEquation("concat('Hello', ' World')") // → {value: "Hello World", type: "s", success: true}
+     * eval("concat('Hello', ' World')") // → {value: "Hello World", type: "s", success: true}
      * 
      * @example
      * // Conditional expressions
-     * evaluateEquation("5 > 3 ? 'yes' : 'no'") // → {value: "yes", type: "s", success: true}
+     * eval("5 > 3 ? 'yes' : 'no'") // → {value: "yes", type: "s", success: true}
      * 
      * @example
      * // Error case
-     * evaluateEquation("5 / 0") // → {error: "Division by zero", success: false}
+     * eval("5 / 0") // → {error: "Division by zero", success: false}
      */
-    evaluateEquation(equation) {
+    eval(equation) {
         this._ensureModuleReady();
         
         try {
@@ -312,7 +312,7 @@ class EquationsParserWrapper {
 
     _runSingleTest(testCase, results) {
         try {
-            const result = this.evaluateEquation(testCase.equation);
+            const result = this.eval(testCase.equation);
             const testResult = this._createTestResult(testCase, result);
             
             this._evaluateTestResult(testResult, testCase, result);
@@ -486,20 +486,20 @@ class EquationsParserWrapper {
     }
 
     _handleEvaluationError(error, equation) {
-        console.error('❌ Error in evaluateEquation:', error);
+        console.error('❌ Error in eval:', error);
         return this._createErrorResult(`JavaScript evaluation error: ${error.message}`, equation);
     }
 }
 
 // Export for both ES6 modules and CommonJS
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = EquationsParserWrapper;
+    module.exports = Parsec;
 } else if (typeof define === 'function' && define.amd) {
-    define(() => EquationsParserWrapper);
+    define(() => Parsec);
 } else {
     // Browser global
-    window.EquationsParserWrapper = EquationsParserWrapper;
+    window.Parsec = Parsec;
 }
 
 // Also export as default for ES6 import
-export default EquationsParserWrapper;
+export default Parsec;
