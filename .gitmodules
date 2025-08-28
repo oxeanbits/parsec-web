@@ -1,0 +1,3 @@
+[submodule "equations-parser"]
+	path = equations-parser
+	url = https://github.com/oxeanbits/equations-parser.git

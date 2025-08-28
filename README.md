@@ -71,7 +71,8 @@ graph LR
 **What's planned:**
 - Replace toy math functions with actual equations-parser library
 - Set up equations-parser as git submodule from `https://github.com/oxeanbits/equations-parser`
-- Compile comprehensive equation evaluation functionality to WASM
+- Compile the comprehensive equation evaluation from `equations-parser` lib to WASM. Also setup a main function called `eval_equation(equation)`, where the `equation` is a string. This `equation` is the string that is the main input sent to the `equations-parser` library for evaluation
+- The output type of this `eval_equation(equation)` can have different types actually: string, float, decimal, integer, boolean. It depends entirety on the result of the equation evaluation
 - Create enhanced HTML + JavaScript testing interface
 - Support for all equations-parser features:
   - **Math functions**: sin, cos, tan, ln, log, abs, sqrt, pow, exp, etc.
@@ -82,8 +83,185 @@ graph LR
   - **Advanced operators**: ternary operators, comparison operators
   - **Multiple return types**: integer/float, string, boolean values
 
-### 🔄 Phase 3: Flutter Web Integration *(Planned)*
-**Goal**: Integrate equations-parser WASM with Flutter Web using `dart:js_interop`
+### 🔄 Phase 3: Automated tests for the Equations-Parser WebAssembly library
+**Goal**: Comprehensive test suite ensuring equations-parser WASM reliability and correctness
+
+**What's planned:**
+- **Unit Tests**: Individual function testing for all equation types
+- **Performance Tests**: Execution time benchmarks vs native implementations
+- **Edge Case Tests**: Boundary conditions and error handling validation
+- **Cross-Browser Tests**: Compatibility across major browsers
+
+#### 📋 Test Categories
+
+##### 🧮 **Basic Arithmetic Tests**
+```javascript
+// Simple operations
+"2 + 3" → 5
+"10 - 4" → 6  
+"7 * 8" → 56
+"15 / 3" → 5
+"2 ^ 3" → 8
+"10 % 3" → 1
+
+// Order of operations
+"2 + 3 * 4" → 14
+"(2 + 3) * 4" → 20
+"2 + 3 * 4 - 1" → 13
+"2 ^ 3 ^ 2" → 512
+```
+
+##### 📐 **Mathematical Functions Tests**
+```javascript
+// Trigonometric functions
+"sin(0)" → 0
+"cos(0)" → 1
+"tan(pi/4)" → 1
+"asin(1)" → π/2
+"acos(0)" → π/2
+"atan(1)" → π/4
+
+// Logarithmic functions  
+"ln(e)" → 1
+"log(100)" → 2
+"log(1000, 10)" → 3
+"exp(1)" → e
+
+// Power and root functions
+"sqrt(16)" → 4
+"pow(2, 3)" → 8
+"abs(-5)" → 5
+"round(3.6)" → 4
+```
+
+##### 🔤 **String Functions Tests**
+```javascript
+// String operations
+"concat('Hello', ' ', 'World')" → "Hello World"
+"length('test')" → 4
+"toupper('hello')" → "HELLO"  
+"tolower('WORLD')" → "world"
+"left('testing', 4)" → "test"
+"right('testing', 3)" → "ing"
+```
+
+##### 📅 **Date/Time Functions Tests**
+```javascript
+// Date operations
+"current_date()" → "2024-MM-DD"
+"daysdiff('2024-01-01', '2024-01-10')" → 9
+"hoursdiff('2024-01-01 12:00', '2024-01-01 15:30')" → 3.5
+"weekday('2024-01-01')" → 1 // Monday
+```
+
+##### ❓ **Conditional/Logical Tests**
+```javascript
+// Ternary operators
+"true ? 5 : 3" → 5
+"false ? 5 : 3" → 3
+"(2 > 1) ? 'yes' : 'no'" → "yes"
+
+// Comparison operators
+"5 > 3" → true
+"2 < 1" → false
+"4 >= 4" → true
+"3 <= 2" → false
+"5 == 5" → true
+"5 != 3" → true
+
+// Logical operators
+"true && true" → true
+"true || false" → true
+"!false" → true
+```
+
+##### 🔀 **Complex Expression Tests**
+```javascript
+// Nested functions
+"sin(cos(pi/3))" → sin(0.5) → ~0.479
+"sqrt(pow(3,2) + pow(4,2))" → 5
+"log(exp(2))" → 2
+
+// String and math combinations
+"length(concat('test', '123')) + 5" → 12
+"toupper('hello') == 'HELLO'" → true
+```
+
+##### ⚠️ **Error Handling Tests**
+```javascript
+// Division by zero
+"5 / 0" → Error: "Division by zero"
+"1 / (2 - 2)" → Error: "Division by zero"
+
+// Invalid functions
+"invalidfunc(5)" → Error: "Unknown function: invalidfunc"
+"sin()" → Error: "Invalid number of arguments for sin"
+
+// Type mismatches  
+"'hello' + 5" → Error: "Type mismatch in addition"
+"sin('not_a_number')" → Error: "Invalid argument type"
+
+// Syntax errors
+"2 + " → Error: "Unexpected end of expression"
+"((2 + 3)" → Error: "Mismatched parentheses"
+```
+
+##### ⚡ **Performance Benchmark Tests**
+```javascript
+// Speed comparisons (WASM vs JavaScript)
+Simple: "2 + 3" → Target: < 1ms
+Medium: "sin(cos(tan(0.5)))" → Target: < 2ms  
+Complex: "sqrt(pow(sin(0.5), 2) + pow(cos(0.5), 2)) * log(exp(2.718))" → Target: < 5ms
+Heavy: "sum(sin(1), cos(2), tan(3), ln(4), sqrt(5), abs(-6), pow(7,2), exp(0.5))" → Target: < 20ms
+```
+
+#### 🛠️ **Test Infrastructure**
+- **Test Runner**: Custom JavaScript test framework with WebAssembly integration
+- **Assertion Library**: Comprehensive floating-point equality with epsilon tolerance
+- **Browser Testing**: Automated testing across Chrome, Firefox, Safari, Edge
+- **CI Integration**: GitHub Actions pipeline with test result reporting
+- **Coverage Reports**: Function coverage analysis for equations-parser features
+- **Performance Monitoring**: Execution time tracking and regression detection
+
+#### 📁 **Test Files Structure**
+```
+tests/
+├── unit/                           # Individual function tests
+│   ├── arithmetic.test.js         # Basic math operations
+│   ├── trigonometry.test.js       # Sin, cos, tan, etc.
+│   ├── logarithms.test.js         # Log, ln, exp functions
+│   ├── strings.test.js            # String manipulation
+│   ├── complex.test.js            # Complex number operations
+│   ├── arrays.test.js             # Array/matrix functions
+│   └── dates.test.js              # Date/time functions
+├── integration/                    # End-to-end workflows
+│   ├── complex-expressions.test.js # Nested function calls
+│   ├── multi-variable.test.js     # Variable assignments
+│   └── mixed-types.test.js        # String/number combinations
+├── performance/                    # Speed benchmarks
+│   ├── simple-ops.bench.js        # Basic arithmetic timing
+│   ├── function-calls.bench.js    # Mathematical function timing
+│   └── complex-expr.bench.js      # Complex expression timing
+├── errors/                         # Error handling validation
+│   ├── syntax-errors.test.js      # Invalid syntax cases
+│   ├── runtime-errors.test.js     # Division by zero, etc.
+│   └── type-errors.test.js        # Type mismatch scenarios
+├── browser/                        # Cross-browser compatibility
+│   └── compatibility.test.js      # Browser-specific tests
+└── test-runner.js                  # Main test orchestration
+```
+
+#### 🎯 **Success Criteria**
+- ✅ **100% Function Coverage**: All equations-parser features tested
+- ✅ **Cross-Browser Compatible**: Works in Chrome, Firefox, Safari, Edge  
+- ✅ **Performance Targets Met**: < 5ms for complex expressions
+- ✅ **Error Handling Robust**: Graceful failure for all edge cases
+- ✅ **Regression Prevention**: Automated CI prevents functionality breaks
+- ✅ **Documentation Complete**: Every test case clearly documented
+
+
+### 🔄 Phase 4: Flutter Web Integration *(Planned)*
+**Goal**: Integrate equations-parser WASM with a small Flutter Web using `dart:js_interop`
 
 **What's planned:**
 - Clean Flutter project structure
@@ -92,7 +270,7 @@ graph LR
 - Web-specific service implementation
 - Flutter UI for equation input and result display
 
-### 🔄 Phase 4: Cross-Platform Mobile Integration *(Optional)*
+### 🔄 Phase 5: Cross-Platform Mobile Integration *(Optional)*
 **Goal**: Extend Flutter integration to mobile/desktop platforms
 
 **What's planned:**
@@ -177,5 +355,6 @@ Each phase includes comprehensive testing:
    - Set up equations-parser as git submodule
    - Replace toy functions with comprehensive equation evaluation
    - Create advanced testing interface for all equation types
-3. **Phase 3**: Flutter Web integration with equations-parser WASM
-4. **Phase 4**: Cross-platform mobile/desktop integration (optional)
+3. **Phase 3**: Automated tests for the WebAssembly library compiled from equations-parser
+4. **Phase 4**: Flutter Web integration with equations-parser WASM
+5. **Phase 5**: Cross-platform mobile/desktop integration (optional)
