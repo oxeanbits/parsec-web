@@ -96,12 +96,12 @@ int test_equations_parser_loaded()
 - **Logging**: Debug output for development and troubleshooting
 
 #### 3. JavaScript API (`js/equations_parser_wrapper.js`)
-Clean JavaScript interface:
+Clean JavaScript interface with native type conversion:
 
 ```javascript
 class Parsec {
     async initialize(wasmPath)     // Load WebAssembly module
-    eval(equation)                 // Evaluate mathematical expressions
+    eval(equation)                 // Evaluate mathematical expressions (returns native types)
     getSupportedFunctions()        // Get function documentation
     runComprehensiveTests()        // Automated testing
 }
@@ -110,9 +110,20 @@ class Parsec {
 **Features:**
 - Promise-based async initialization
 - Comprehensive error handling and validation
+- **Native Type Conversion**: Automatic conversion from C++ strings to proper JavaScript types
 - Type-aware result objects
 - Built-in test suite
 - Complete function documentation
+
+**Type Conversion System:**
+The JavaScript wrapper now includes a sophisticated type conversion system that mirrors the Ruby implementation:
+
+- **Integer Types** (`int`/`i`): Converted to JavaScript `number` using `parseInt()`
+- **Float Types** (`float`/`f`): Converted to JavaScript `number` using `parseFloat()`
+- **Boolean Types** (`boolean`/`b`): Converted to JavaScript `boolean` with comprehensive string-to-boolean logic
+- **String Types** (`string`/`s`): Returned as JavaScript `string` with error checking
+- **Special Values**: `inf` → `'Infinity'`, `-inf` → `'-Infinity'`, `nan` → `'nan'`
+- **Error Handling**: Automatic detection and throwing of error strings starting with "Error:"
 
 #### 4. Interactive Test Interface (`html/equations-parser-test.html`)
 Comprehensive web testing environment:
@@ -179,22 +190,44 @@ The system supports an extensive range of mathematical and utility operations:
 
 ### API Examples
 
-#### Basic Usage
+#### Basic Usage with Native Type Conversion
 ```javascript
 const parsec = new Parsec();
 await parsec.initialize();
 
-// Mathematical evaluation
+// Mathematical evaluation - returns native JavaScript number
 const result1 = parsec.eval('2 + 3 * sin(pi/2)');
-// → {value: "5", type: "f", success: true}
+// → {value: 5, type: "f", success: true}  (value is number, not string)
 
-// String operations
+// String operations - returns native JavaScript string
 const result2 = parsec.eval('concat("Hello", " World")');
 // → {value: "Hello World", type: "s", success: true}
 
-// Conditional logic
-const result3 = parsec.eval('5 > 3 ? "yes" : "no"');
+// Boolean logic - returns native JavaScript boolean
+const result3 = parsec.eval('5 > 3');
+// → {value: true, type: "b", success: true}  (value is boolean, not string)
+
+// Conditional logic - returns native JavaScript string
+const result4 = parsec.eval('5 > 3 ? "yes" : "no"');
 // → {value: "yes", type: "s", success: true}
+
+// Integer operations - returns native JavaScript number
+const result5 = parsec.eval('10 / 2');
+// → {value: 5, type: "i", success: true}  (value is number, not string)
+```
+
+#### Type Conversion Examples
+```javascript
+// Special float values
+parsec.eval('1/0');     // → {value: "Infinity", type: "f", success: true}
+parsec.eval('-1/0');    // → {value: "-Infinity", type: "f", success: true}
+parsec.eval('0/0');     // → {value: "nan", type: "f", success: true}
+
+// Boolean conversions (following Ruby string-to-boolean logic)
+parsec.eval('true');    // → {value: true, type: "b", success: true}
+parsec.eval('false');   // → {value: false, type: "b", success: true}
+parsec.eval('"1"');     // If evaluated as boolean → true
+parsec.eval('"0"');     // If evaluated as boolean → false
 ```
 
 #### Error Handling

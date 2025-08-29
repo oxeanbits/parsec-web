@@ -14,6 +14,21 @@ class Parsec {
     }
 
     /**
+     * Convert string to boolean following Ruby implementation
+     * @private
+     */
+    _stringToBoolean(value) {
+        const str = value.toString();
+        if (str === 'true' || str === '1' || /^(true|t|yes|y|1|on)$/i.test(str)) {
+            return true;
+        }
+        if (str === 'false' || str === '0' || str === '' || str.trim() === '' || /^(false|f|no|n|0|off)$/i.test(str)) {
+            return false;
+        }
+        throw new Error(`invalid value for Boolean: "${str}"`);
+    }
+
+    /**
      * Initialize and load the WebAssembly module
      * @param {string} wasmPath - Path to the WASM JavaScript file
      * @returns {Promise<void>} Promise that resolves when module is loaded
@@ -34,16 +49,16 @@ class Parsec {
     async _loadModule(wasmPath) {
         try {
             this._logModuleLoadStart(wasmPath);
-            
+
             const moduleFactory = await this._importWasmModule(wasmPath);
             this.module = await this._initializeModule(moduleFactory);
-            
+
             this._validateModuleLoaded();
             this._runModuleTest();
-            
+
             this.isLoaded = true;
             this._logModuleLoadSuccess();
-            
+
         } catch (error) {
             this._handleModuleLoadError(error);
         }
@@ -84,19 +99,19 @@ class Parsec {
      */
     eval(equation) {
         this._ensureModuleReady();
-        
+
         try {
             this._validateEquationInput(equation);
-            
+
             console.log(`🧮 JS: Evaluating equation: "${equation}"`);
-            
+
             const jsonResult = this.module.eval_equation(equation);
             console.log(`🧮 JS: Raw result from C++: ${jsonResult}`);
-            
+
             const parsedResult = JSON.parse(jsonResult);
-            
+
             return this._createEvaluationResult(parsedResult, equation);
-            
+
         } catch (error) {
             return this._handleEvaluationError(error, equation);
         }
@@ -113,7 +128,7 @@ class Parsec {
                 '+ (addition)', '- (subtraction)', '* (multiplication)', '/ (division)', 
                 '^ (power)', '% (modulo)', '+= -= *= /= (assignment operators)'
             ],
-            
+
             // Trigonometric functions
             trigonometric: [
                 'sin(x) - sine function',
@@ -124,7 +139,7 @@ class Parsec {
                 'atan(x) - arc tangent',
                 'atan2(y,x) - arc tangent with quadrant fix'
             ],
-            
+
             // Hyperbolic functions
             hyperbolic: [
                 'sinh(x) - hyperbolic sine',
@@ -134,7 +149,7 @@ class Parsec {
                 'acosh(x) - inverse hyperbolic cosine',
                 'atanh(x) - inverse hyperbolic tangent'
             ],
-            
+
             // Logarithmic and exponential functions
             logarithmic: [
                 'ln(x) - natural logarithm',
@@ -143,7 +158,7 @@ class Parsec {
                 'log2(x) - logarithm base 2',
                 'exp(x) - exponential function (e^x)'
             ],
-            
+
             // Root and power functions
             mathematical: [
                 'abs(x) - absolute value',
@@ -156,7 +171,7 @@ class Parsec {
                 'fmod(x,y) - floating point remainder of x/y',
                 'remainder(x,y) - IEEE remainder of x/y'
             ],
-            
+
             // String manipulation functions
             string: [
                 'concat(s1,s2) - concatenate two strings',
@@ -174,7 +189,7 @@ class Parsec {
                 'default_value(val,default) - return default if val is null',
                 'calculate(s) - evaluate equation in string'
             ],
-            
+
             // Matrix functions
             matrix: [
                 'ones(rows,cols) - matrix of ones',
@@ -183,12 +198,12 @@ class Parsec {
                 'size(matrix) - matrix dimensions',
                 "transpose - matrix transpose operator (')"
             ],
-            
+
             // Array/vector functions
             array: [
                 'sizeof(a) - number of elements in array'
             ],
-            
+
             // Date functions
             date: [
                 'current_date() - current date (YYYY-MM-DD)',
@@ -199,21 +214,21 @@ class Parsec {
                 'weekday(date) - day of week (0=Sunday)',
                 'weekday(date,locale) - localized day name'
             ],
-            
+
             // Time functions
             time: [
                 'current_time() - current time (HH:MM:SS)',
                 'current_time(offset) - current time with GMT offset',
                 'timediff(time1,time2) - difference in hours'
             ],
-            
+
             // Utility functions
             utility: [
                 'mask(pattern,number) - apply formatting mask',
                 'regex(text,pattern) - regex pattern matching',
                 'parserid() - parser version information'
             ],
-            
+
             // Comparison and logical operators
             comparison: [
                 '> < >= <= (comparison operators)',
@@ -224,20 +239,20 @@ class Parsec {
                 '& | (bitwise AND, OR)',
                 '<< >> (bit shift operators)'
             ],
-            
+
             // Conditional expressions
             conditional: [
                 '? : (ternary operator)',
                 'condition ? true_value : false_value'
             ],
-            
+
             // Mathematical constants
             constants: [
                 'pi - π (3.14159...)',
                 'e - Euler\'s number (2.71828...)',
                 'null - null value'
             ],
-            
+
             // Aggregation functions
             aggregation: [
                 'min(x1,x2,...) - minimum value',
@@ -245,7 +260,7 @@ class Parsec {
                 'sum(x1,x2,...) - sum of all values',
                 'avg(x1,x2,...) - average of all values'
             ],
-            
+
             // Type casting
             casting: [
                 '(float) - cast to floating point',
@@ -261,7 +276,7 @@ class Parsec {
      */
     async runComprehensiveTests() {
         this._ensureModuleReady();
-        
+
         console.log('🧪 Running comprehensive equations-parser tests...');
         const results = this._createTestResultsContainer();
         const testCases = this._getTestCases();
@@ -464,8 +479,63 @@ class Parsec {
             return this._createErrorResult(parsedResult.error, equation);
         }
         
-        console.log(`✅ JS: Equation evaluated successfully: ${parsedResult.val} (type: ${parsedResult.type})`);
-        return this._createSuccessResult(parsedResult.val, parsedResult.type, equation);
+        console.log(`✅ JS: Raw result from C++: ${parsedResult.val} (type: ${parsedResult.type})`);
+        const convertedValue = this._convert(parsedResult);
+        console.log(`✅ JS: Converted result: ${convertedValue} (type: ${parsedResult.type})`);
+        return this._createSuccessResult(convertedValue, parsedResult.type, equation);
+    }
+
+    /**
+     * Convert result value to proper JavaScript type following Ruby implementation
+     * @private
+     */
+    _convert(result) {
+        // Handle special float values first
+        switch (result.val) {
+            case 'inf': return 'Infinity';
+            case '-inf': return '-Infinity';
+            case 'nan':
+            case '-nan': return 'nan';
+        }
+
+        // Handle type conversions
+        switch (result.type) {
+            case 'int':
+            case 'i':
+                return parseInt(result.val, 10);
+            
+            case 'float':
+            case 'f':
+                return parseFloat(result.val);
+            
+            case 'boolean':
+            case 'b':
+                return this._stringToBoolean(result.val);
+            
+            case 'string':
+            case 's':
+                return this._errorCheck(result.val);
+            
+            case 'complex':
+                return 'complex number'; // Maybe future implementation
+            
+            case 'matrix':
+                return 'matrix value';   // Maybe future implementation
+            
+            default:
+                return result.val;
+        }
+    }
+
+    /**
+     * Check for error strings and throw if found
+     * @private
+     */
+    _errorCheck(output) {
+        if (output.match && output.match(/^Error:/)) {
+            throw new Error(output.replace(/^Error: /, ''));
+        }
+        return output;
     }
 
     _createSuccessResult(value, type, equation) {

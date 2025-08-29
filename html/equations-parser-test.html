@@ -528,11 +528,14 @@
         }
 
         function displaySuccessResult(result, resultDiv) {
+            const valueType = typeof result.value;
+            const convertedNote = valueType !== 'string' ? ` (converted to ${valueType})` : '';
+            
             resultDiv.innerHTML = `
                 <div class="result success">
                     <div class="result-value">Result: ${result.value}</div>
                     <div class="result-meta">
-                        Type: ${result.type} | Equation: ${result.equation}
+                        Type: ${result.type}${convertedNote} | Equation: ${result.equation}
                     </div>
                 </div>
             `;
