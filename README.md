@@ -610,31 +610,84 @@ class _CalculatorPageState extends State<CalculatorPage> {
 - Platform Channel integration for mobile/desktop
 - Unified Flutter interface across all platforms
 
-## 🚀 Quick Start (Phase 1)
+## 🚀 Quick Start
 
-### Prerequisites
-- Emscripten SDK installed and configured
-- Modern web browser with ES6 module support
-- Local web server (Python, Node.js, or similar)
+### Installation
+```bash
+# Install the library (when published to npm)
+npm install parsec-equations-lib
 
-### Build and Test
+# Or clone and install for development
+git clone <repository-url>
+cd parsec-web
+npm install
+```
+
+### Basic Usage
+
+#### **ES6 Modules (Recommended)**
+```javascript
+import { EquationsEvaluator } from 'parsec-equations-lib'
+
+const parsec = new EquationsEvaluator()
+await parsec.initialize()
+
+// Basic evaluation
+const result = parsec.eval('2 + 3 * sin(pi/2)')
+console.log(result.value) // 5
+console.log(result.type)  // 'f' (float)
+
+// Batch evaluation
+const results = parsec.evaluateBatch([
+  '2 + 2',
+  'sqrt(16)', 
+  'concat("Hello", " World")'
+])
+
+// Get library info
+console.log(parsec.getInfo())
+```
+
+#### **CommonJS (Node.js)**
+```javascript
+const EquationsEvaluator = require('parsec-equations-lib')
+
+const parsec = new EquationsEvaluator()
+await parsec.initialize()
+
+const result = parsec.eval('sin(pi/2) + cos(0)')
+console.log(result.value) // 2
+```
+
+#### **TypeScript**
+```typescript
+import { EquationsEvaluator, EquationResult } from 'parsec-equations-lib'
+
+const parsec = new EquationsEvaluator()
+await parsec.initialize()
+
+const result: EquationResult = parsec.eval('abs(-42)')
+if (result.success) {
+  console.log(`Result: ${result.value}`) // Result: 42
+}
+```
+
+### Development Setup
 ```bash
 # 1. Build the WebAssembly module
 chmod +x build.sh
 ./build.sh
 
-# 2. Start local server
-python3 -m http.server 8000
+# 2. Run tests
+npm test
 
-# 3. Open test page
-# Navigate to: http://localhost:8000/html/test.html
+# 3. Start development server
+npm run dev
+# Navigate to: http://localhost:8000
+
+# 4. Code formatting and linting
+npm run style:fix
 ```
-
-### Expected Results
-- ✅ "WebAssembly module ready!" status message
-- ✅ Interactive math function testing
-- ✅ Automated test suite passes
-- ✅ C++ debug output in console
 
 ## 📁 Project Structure
 
@@ -689,6 +742,93 @@ npm run test:integration   # Integration tests only
 npm run test:performance   # Performance benchmarks only
 ```
 
+### **Code Quality & Formatting**
+The project uses **Prettier** + **ESLint** for consistent code formatting and quality:
+
+```bash
+# Check code formatting
+npm run format:check
+
+# Auto-fix formatting
+npm run format
+
+# Run linting
+npm run lint
+
+# Auto-fix linting issues
+npm run lint:fix
+
+# Fix both linting and formatting
+npm run style:fix
+```
+
+**Prettier Configuration:**
+- Single quotes, no semicolons
+- 2-space indentation, 100 character line width
+- ES5 trailing commas, avoid arrow parentheses
+
+## 📖 API Reference
+
+### **Core Methods**
+
+#### `parsec.eval(equation)`
+Evaluate a single mathematical expression.
+```javascript
+const result = parsec.eval('2 + 3 * 4')
+// Returns: 14
+
+const text = parsec.eval('concat("Hello", " World")')
+// Returns: "Hello World"
+
+const boolean = parsec.eval('5 > 3')
+// Returns: true
+```
+
+#### `parsec.evaluateBatch(equations)`
+**New in Step 2**: Evaluate multiple expressions in one call.
+```javascript
+const results = parsec.evaluateBatch(['2+2', 'sqrt(16)', 'sin(pi/2)'])
+// Returns array of results with index information
+```
+
+#### `parsec.evaluateWithTimeout(equation, timeoutMs)`
+**New in Step 2**: Evaluate with timeout protection.
+```javascript
+const result = await parsec.evaluateWithTimeout('complex_expression', 5000)
+// Returns: the evaluated result (number, string, or boolean)
+```
+
+### **Library Information**
+
+#### `parsec.getInfo()`
+**New in Step 2**: Get comprehensive library metadata.
+```javascript
+const info = parsec.getInfo()
+console.log(info.supportedPlatforms) // ['Browser (ES6)', 'Node.js', ...]
+console.log(info.features) // ['WebAssembly performance', 'Offline capability', ...]
+```
+
+#### `parsec.getSupportedFunctions()`
+Get detailed information about all available mathematical functions, organized by category.
+
+### **Import Methods**
+
+#### **ES6 Modules**
+```javascript
+import { EquationsEvaluator } from 'parsec-equations-lib'
+import EquationsEvaluator from 'parsec-equations-lib' // Default import
+```
+
+#### **CommonJS**
+```javascript
+const EquationsEvaluator = require('parsec-equations-lib')
+```
+
+#### **TypeScript**
+```typescript
+import { EquationsEvaluator, EquationResult, BatchEvaluationResult } from 'parsec-equations-lib'
+```
+
 ## 📚 Documentation
 
 - **[Phase 1 Guide](docs/phase1-guide.md)**: Complete setup and testing instructions
@@ -699,10 +839,14 @@ npm run test:performance   # Performance benchmarks only
 
 - **C++17+**: Modern C++ with Emscripten bindings
 - **Emscripten**: Latest version with optimized flags
-- **JavaScript ES6**: Modules, async/await, classes
+- **JavaScript ES6+**: Modules, async/await, classes
+- **TypeScript**: Full type definitions included
 - **WebAssembly**: Binary format with JavaScript integration
 - **Equations-Parser Library**: Advanced mathematical expression evaluator
-- **Flutter 3.x**: `dart:js_interop` for web integration (Phase 3+)
+- **Vitest**: Modern testing framework for comprehensive test coverage
+- **Prettier + ESLint**: Code formatting and quality assurance
+- **Multi-format exports**: ES6, CommonJS, UMD compatibility
+- **Flutter 3.x**: `dart:js_interop` for web integration (Phase 5+)
 
 ## 📈 Progress Overview
 
