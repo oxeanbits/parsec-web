@@ -76,23 +76,23 @@ class Parsec {
      * Evaluate a mathematical equation using the equations-parser library
      * @param {string} equation - The mathematical expression to evaluate
      * @returns {Object} Result object with value, type, and error information
-     * 
+     *
      * @example
      * // Basic arithmetic
      * eval("2 + 3 * 4") // → {value: "14", type: "i", success: true}
-     * 
+     *
      * @example
      * // Trigonometric functions
      * eval("sin(pi/2)") // → {value: "1", type: "f", success: true}
-     * 
+     *
      * @example
      * // String functions
      * eval("concat('Hello', ' World')") // → {value: "Hello World", type: "s", success: true}
-     * 
+     *
      * @example
      * // Conditional expressions
      * eval("5 > 3 ? 'yes' : 'no'") // → {value: "yes", type: "s", success: true}
-     * 
+     *
      * @example
      * // Error case
      * eval("5 / 0") // → {error: "Division by zero", success: false}
@@ -111,7 +111,6 @@ class Parsec {
             const parsedResult = JSON.parse(jsonResult);
 
             return this._createEvaluationResult(parsedResult, equation);
-
         } catch (error) {
             return this._handleEvaluationError(error, equation);
         }
@@ -126,7 +125,7 @@ class Parsec {
             // Basic arithmetic operators
             arithmetic: [
                 '+ (addition)', '- (subtraction)', '* (multiplication)', '/ (division)', 
-                '^ (power)', '% (modulo)', '+= -= *= /= (assignment operators)'
+                '^ (power)', '+= -= *= /= (assignment operators)'
             ],
 
             // Trigonometric functions
@@ -222,6 +221,7 @@ class Parsec {
                 'timediff(time1,time2) - difference in hours'
             ],
 
+
             // Utility functions
             utility: [
                 'mask(pattern,number) - apply formatting mask',
@@ -308,17 +308,17 @@ class Parsec {
             { equation: '2 ^ 3', expected: '8', description: 'Power operation' },
             { equation: '2 + 3 * 4', expected: '14', description: 'Order of operations' },
             { equation: '(2 + 3) * 4', expected: '20', description: 'Parentheses precedence' },
-            
+
             // Mathematical functions
             { equation: 'sin(0)', expected: '0', description: 'Sine of zero' },
             { equation: 'cos(0)', expected: '1', description: 'Cosine of zero' },
             { equation: 'sqrt(16)', expected: '4', description: 'Square root' },
             { equation: 'abs(-5)', expected: '5', description: 'Absolute value' },
             { equation: 'round(3.6)', expected: '4', description: 'Rounding function' },
-            
+
             // String functions
             { equation: 'length("test")', expected: '4', description: 'String length' },
-            
+
             // Conditional expressions
             { equation: '5 > 3', expected: 'true', description: 'Greater than comparison', allowBooleanString: true },
             { equation: '2 < 1', expected: 'false', description: 'Less than comparison', allowBooleanString: true },
@@ -329,10 +329,10 @@ class Parsec {
         try {
             const result = this.eval(testCase.equation);
             const testResult = this._createTestResult(testCase, result);
-            
+
             this._evaluateTestResult(testResult, testCase, result);
             this._recordTestResult(testResult, results);
-            
+
         } catch (error) {
             this._handleTestError(testCase, error, results);
         }
@@ -357,7 +357,7 @@ class Parsec {
 
         const actualValue = result.value.toString();
         const expectedValue = testCase.expected.toString();
-        
+
         testResult.passed = testCase.allowBooleanString 
             ? this._compareBooleanValues(actualValue, expectedValue)
             : this._compareValues(actualValue, expectedValue);
@@ -377,7 +377,7 @@ class Parsec {
             const PRECISION_THRESHOLD = 0.0001;
             return Math.abs(actualNum - expectedNum) < PRECISION_THRESHOLD;
         }
-        
+
         return actualValue === expectedValue;
     }
 
@@ -418,14 +418,14 @@ class Parsec {
     async _importWasmModule(wasmPath) {
         const moduleImport = await import(wasmPath);
         console.log('🔍 Module import successful');
-        
+
         const moduleFactory = moduleImport.default;
-        
+
         if (typeof moduleFactory !== 'function') {
             console.log('🔍 Available exports:', Object.keys(moduleImport));
             throw new Error(`Expected factory function, got ${typeof moduleFactory}`);
         }
-        
+
         return moduleFactory;
     }
 
@@ -467,7 +467,7 @@ class Parsec {
         if (typeof equation !== 'string') {
             throw new Error('Equation must be a string');
         }
-        
+
         if (!equation.trim()) {
             throw new Error('Equation cannot be empty');
         }
@@ -478,7 +478,7 @@ class Parsec {
             console.log(`❌ JS: Equation evaluation error: ${parsedResult.error}`);
             return this._createErrorResult(parsedResult.error, equation);
         }
-        
+
         console.log(`✅ JS: Raw result from C++: ${parsedResult.val} (type: ${parsedResult.type})`);
         const convertedValue = this._convert(parsedResult);
         console.log(`✅ JS: Converted result: ${convertedValue} (type: ${parsedResult.type})`);
@@ -503,25 +503,25 @@ class Parsec {
             case 'int':
             case 'i':
                 return parseInt(result.val, 10);
-            
+
             case 'float':
             case 'f':
                 return parseFloat(result.val);
-            
+
             case 'boolean':
             case 'b':
                 return this._stringToBoolean(result.val);
-            
+
             case 'string':
             case 's':
                 return this._errorCheck(result.val);
-            
+
             case 'complex':
                 return 'complex number'; // Maybe future implementation
-            
+
             case 'matrix':
                 return 'matrix value';   // Maybe future implementation
-            
+
             default:
                 return result.val;
         }
@@ -556,7 +556,8 @@ class Parsec {
     }
 
     _handleEvaluationError(error, equation) {
-        console.error('❌ Error in eval:', error);
+        console.error('❌ Error in eval:', error.message || error);
+
         return this._createErrorResult(`JavaScript evaluation error: ${error.message}`, equation);
     }
 }
