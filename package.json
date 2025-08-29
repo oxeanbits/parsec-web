@@ -1,0 +1,95 @@
+{
+  "name": "parsec-equations-lib",
+  "version": "1.0.0",
+  "description": "Fast mathematical expression evaluator powered by WebAssembly - A generalized JavaScript library that connects to equations-parser for cross-platform equation evaluation",
+  "main": "index.js",
+  "module": "index.mjs",
+  "types": "types.d.ts",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.js",
+      "types": "./types.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "index.mjs", 
+    "types.d.ts",
+    "js/",
+    "wasm/",
+    "README.md",
+    "CLAUDE.md"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "browser": {
+    "./index.js": "./index.js",
+    "./index.mjs": "./index.mjs"
+  },
+  "scripts": {
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
+    "test:unit": "vitest tests/unit",
+    "test:integration": "vitest tests/integration",
+    "test:performance": "vitest tests/performance",
+    "test:run": "vitest run",
+    "build": "./build.sh",
+    "lint": "eslint . --ext .js,.mjs",
+    "lint:fix": "eslint . --ext .js,.mjs --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "style": "npm run lint && npm run format:check",
+    "style:fix": "npm run lint:fix && npm run format",
+    "serve": "python3 -m http.server 8000",
+    "dev": "python3 -m http.server 8000"
+  },
+  "keywords": [
+    "math",
+    "equations", 
+    "calculator",
+    "expressions",
+    "webassembly",
+    "wasm",
+    "cross-platform",
+    "javascript",
+    "react",
+    "vue",
+    "angular",
+    "flutter-web",
+    "nodejs",
+    "trigonometry",
+    "logarithms",
+    "string-functions",
+    "date-functions",
+    "complex-numbers",
+    "arrays",
+    "performance",
+    "offline"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-org/parsec-web.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/parsec-web/issues"
+  },
+  "homepage": "https://github.com/your-org/parsec-web#readme",
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@vitest/coverage-v8": "^1.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.0",
+    "vitest": "^1.0.0"
+  },
+  "peerDependencies": {},
+  "dependencies": {},
+  "optionalDependencies": {},
+  "sideEffects": false
+}

@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+coverage/
+
+# Generated WebAssembly files
+wasm/*.js
+*.wasm
+
+# HTML test files (legacy)
+html/
+tests/*.html
+
+# Documentation
+docs/
+
+# Minified files
+*.min.js
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
