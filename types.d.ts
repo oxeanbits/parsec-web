@@ -133,18 +133,22 @@ export default class EquationsEvaluator {
   /**
    * Evaluate a mathematical expression
    * @param equation - The mathematical expression to evaluate
-   * @returns Result object with value, type, and success information
+   * @returns The evaluated result with proper JavaScript type conversion
+   * @throws Error if the equation is invalid or evaluation fails
    *
    * @example
    * ```typescript
-   * const result = evaluator.eval('2 + 3 * 4');
-   * if (result.success) {
-   *   console.log(result.value); // 14
-   *   console.log(result.type);  // 'i'
-   * }
+   * const result = parsec.eval('2 + 3 * 4');
+   * console.log(result); // 14 (number)
+   * 
+   * const text = parsec.eval('concat("Hello", " World")');
+   * console.log(text); // "Hello World" (string)
+   * 
+   * const bool = parsec.eval('5 > 3');
+   * console.log(bool); // true (boolean)
    * ```
    */
-  eval(equation: string): EquationResult
+  eval(equation: string): number | string | boolean
 
   /**
    * Evaluate multiple equations in batch
@@ -166,9 +170,9 @@ export default class EquationsEvaluator {
    * Evaluate equation with timeout protection
    * @param equation - Mathematical expression to evaluate
    * @param timeoutMs - Timeout in milliseconds (default: 5000)
-   * @returns Promise that resolves with the evaluation result
+   * @returns Promise that resolves with the evaluated result
    */
-  evaluateWithTimeout(equation: string, timeoutMs?: number): Promise<EquationResult>
+  evaluateWithTimeout(equation: string, timeoutMs?: number): Promise<number | string | boolean>
 
   /**
    * Get information about supported functions and operators

@@ -17,7 +17,7 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
   // Node.js environment - use dynamic import for ES module
   let evaluatorPromise = null
 
-  const loadEvaluator = async () => {
+  const loadEvaluator = () => {
     if (!evaluatorPromise) {
       evaluatorPromise = import('./js/equations_parser_wrapper.js').then(module => module.default)
     }
@@ -58,7 +58,7 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
       return this._evaluator.getSupportedFunctions()
     }
 
-    async runComprehensiveTests() {
+    runComprehensiveTests() {
       if (!this._evaluator) {
         throw new Error('Evaluator not initialized. Call initialize() first.')
       }

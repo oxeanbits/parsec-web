@@ -103,11 +103,12 @@ class EquationsEvaluator extends ParsecEvaluator {
 
     return equations.map((equation, index) => {
       try {
-        const result = this.eval(equation)
+        const value = this.eval(equation)
         return {
           index,
           equation,
-          ...result,
+          value,
+          success: true,
         }
       } catch (error) {
         return {
@@ -126,7 +127,7 @@ class EquationsEvaluator extends ParsecEvaluator {
    * @param {number} timeoutMs - Timeout in milliseconds (default: 5000)
    * @returns {Promise<Object>} Evaluation result
    */
-  async evaluateWithTimeout(equation, timeoutMs = 5000) {
+  evaluateWithTimeout(equation, timeoutMs = 5000) {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(new Error(`Equation evaluation timed out after ${timeoutMs}ms`))

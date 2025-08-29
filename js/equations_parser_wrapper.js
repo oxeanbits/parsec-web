@@ -42,7 +42,7 @@ class Parsec {
    * @param {string} wasmPath - Path to the WASM JavaScript file
    * @returns {Promise<void>} Promise that resolves when module is loaded
    */
-  async initialize(wasmPath = '../wasm/equations_parser.js') {
+  initialize(wasmPath = '../wasm/equations_parser.js') {
     if (this.isAlreadyLoading()) {
       return this.loadingPromise
     }
@@ -83,27 +83,32 @@ class Parsec {
   /**
    * Evaluate a mathematical equation using the equations-parser library
    * @param {string} equation - The mathematical expression to evaluate
-   * @returns {Object} Result object with value, type, and error information
+   * @returns {number|string|boolean} The evaluated result with proper JavaScript type conversion
+   * @throws {Error} If the equation is invalid or evaluation fails
    *
    * @example
    * // Basic arithmetic
-   * eval("2 + 3 * 4") // → {value: "14", type: "i", success: true}
+   * eval("2 + 3 * 4") // → 14
    *
    * @example
    * // Trigonometric functions
-   * eval("sin(pi/2)") // → {value: "1", type: "f", success: true}
+   * eval("sin(pi/2)") // → 1
    *
    * @example
    * // String functions
-   * eval("concat('Hello', ' World')") // → {value: "Hello World", type: "s", success: true}
+   * eval("concat('Hello', ' World')") // → "Hello World"
+   *
+   * @example
+   * // Boolean results
+   * eval("5 > 3") // → true
    *
    * @example
    * // Conditional expressions
-   * eval("5 > 3 ? 'yes' : 'no'") // → {value: "yes", type: "s", success: true}
+   * eval("5 > 3 ? 'yes' : 'no'") // → "yes"
    *
    * @example
-   * // Error case
-   * eval("5 / 0") // → {error: "Division by zero", success: false}
+   * // Error case (throws exception)
+   * eval("5 / 0") // throws Error: "Division by zero"
    */
   eval(equation) {
     this._ensureModuleReady()
@@ -118,9 +123,19 @@ class Parsec {
 
       const parsedResult = JSON.parse(jsonResult)
 
-      return this._createEvaluationResult(parsedResult, equation)
+      if (parsedResult.error) {
+        console.log(`❌ JS: Equation evaluation error: ${parsedResult.error}`)
+        throw new Error(parsedResult.error)
+      }
+
+      console.log(`✅ JS: Raw result from C++: ${parsedResult.val} (type: ${parsedResult.type})`)
+      const convertedValue = this._convert(parsedResult)
+      console.log(`✅ JS: Converted result: ${convertedValue} (type: ${parsedResult.type})`)
+      
+      return convertedValue
     } catch (error) {
-      return this._handleEvaluationError(error, equation)
+      console.error('❌ Error in eval:', error.message || error)
+      throw error
     }
   }
 
@@ -276,7 +291,7 @@ class Parsec {
    * Run comprehensive tests of the equations-parser functionality
    * @returns {Object} Test results with success/failure information
    */
-  async runComprehensiveTests() {
+  runComprehensiveTests() {
     this._ensureModuleReady()
 
     console.log('🧪 Running comprehensive equations-parser tests...')

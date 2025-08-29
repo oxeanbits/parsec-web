@@ -44,6 +44,9 @@ module.exports = {
     // WebAssembly globals
     WebAssembly: 'readonly',
 
+    // AMD module globals
+    define: 'readonly',
+
     // Test environment globals
     __TEST_ENV__: 'readonly',
     __VERSION__: 'readonly',
