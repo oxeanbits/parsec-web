@@ -1,12 +1,12 @@
 /**
  * Boolean and Comparison Operations Tests
- * 
+ *
  * Tests for boolean logic, comparison operators, and conditional expressions
  * supported by the equations-parser WebAssembly module.
  */
 
 import { describe, it, expect, beforeAll } from 'vitest'
-import { testUtils, createTestEvaluator } from './setup.js'
+import { createTestEvaluator } from './setup.js'
 
 describe('Boolean and Comparison Operations', () => {
   let parsec
@@ -108,8 +108,8 @@ describe('Boolean and Comparison Operations', () => {
     })
 
     it('should perform bit shift operations', () => {
-      expect(parsec.eval('4 << 1')).toBe(8)  // 100 << 1 = 1000
-      expect(parsec.eval('8 >> 1')).toBe(4)  // 1000 >> 1 = 100
+      expect(parsec.eval('4 << 1')).toBe(8) // 100 << 1 = 1000
+      expect(parsec.eval('8 >> 1')).toBe(4) // 1000 >> 1 = 100
       expect(parsec.eval('16 >> 2')).toBe(4) // 10000 >> 2 = 100
     })
   })

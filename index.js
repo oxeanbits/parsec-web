@@ -70,7 +70,8 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
 } else {
   // Browser environment - fallback to global or throw error
   if (typeof window !== 'undefined' && window.Parsec) {
-    Parsec = window.Parsec
+    const { Parsec: WindowParsec } = window
+    Parsec = WindowParsec
   } else {
     throw new Error(
       'Parsec WebAssembly module not found. Please ensure the module is properly loaded.'

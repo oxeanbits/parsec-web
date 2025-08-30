@@ -158,6 +158,7 @@ module.exports = {
     'node_modules/',
     'coverage/',
     'dist/',
+    'equations-parser/', // Git submodule - don't lint
     'wasm/*.js', // Generated Emscripten files
     '*.wasm',
     'html/',

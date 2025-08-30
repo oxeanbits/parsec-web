@@ -1,12 +1,12 @@
 /**
  * Arithmetic Operations Tests
- * 
- * Tests basic arithmetic operations that are actually supported 
+ *
+ * Tests basic arithmetic operations that are actually supported
  * by the equations-parser WebAssembly module.
  */
 
 import { describe, it, expect, beforeAll } from 'vitest'
-import { testUtils, createTestEvaluator, assertAlmostEqual } from './setup.js'
+import { createTestEvaluator, assertAlmostEqual } from './setup.js'
 
 describe('Arithmetic Operations', () => {
   let parsec

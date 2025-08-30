@@ -21,8 +21,8 @@ global.TEST_TIMEOUT = 10000
 global.evaluator = null
 
 // Mock console methods if needed for cleaner test output
-const originalConsoleLog = console.log
-const originalConsoleError = console.error
+const _originalConsoleLog = console.log
+const _originalConsoleError = console.error
 
 // Setup before all tests
 beforeAll(async () => {
@@ -70,7 +70,7 @@ afterAll(() => {
 })
 
 // Utility function to create a test evaluator instance
-export async function createTestEvaluator() {
+export function createTestEvaluator() {
   if (global.evaluator && global.evaluator.isReady()) {
     return global.evaluator
   }
@@ -90,11 +90,7 @@ export function assertAlmostEqual(actual, expected, tolerance = 1e-10, message =
 
 // Utility function to check if a result is a valid direct value
 export function isValidDirectValue(result) {
-  return (
-    typeof result === 'number' ||
-    typeof result === 'string' ||
-    typeof result === 'boolean'
-  )
+  return typeof result === 'number' || typeof result === 'string' || typeof result === 'boolean'
 }
 
 // Export test utilities

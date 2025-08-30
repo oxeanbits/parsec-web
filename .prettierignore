@@ -1,6 +1,9 @@
 # Dependencies
 node_modules/
 
+# Submodules
+equations-parser/
+
 # Build outputs
 dist/
 coverage/
@@ -22,6 +25,12 @@ docs/
 # Logs
 *.log
 npm-debug.log*
+
+# Test results
+test-results*.json
+
+# GitHub files
+.github/
 
 # OS files
 .DS_Store

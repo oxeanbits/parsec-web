@@ -18,7 +18,7 @@ class MathWasmWrapper {
    * @param {string} wasmPath - Path to the WASM JavaScript file
    * @returns {Promise<void>} Promise that resolves when module is loaded
    */
-  async initialize(wasmPath = '../wasm/math_functions.js') {
+  initialize(wasmPath = '../wasm/math_functions.js') {
     if (this.loadingPromise) {
       return this.loadingPromise
     }

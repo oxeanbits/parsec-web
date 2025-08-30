@@ -1,12 +1,12 @@
 /**
  * Mathematical Functions Tests
- * 
+ *
  * Tests for trigonometric, logarithmic, exponential, and other
  * mathematical functions that are actually supported by equations-parser.
  */
 
 import { describe, it, expect, beforeAll } from 'vitest'
-import { testUtils, createTestEvaluator, assertAlmostEqual } from './setup.js'
+import { createTestEvaluator, assertAlmostEqual } from './setup.js'
 
 describe('Mathematical Functions', () => {
   let parsec
@@ -38,18 +38,18 @@ describe('Mathematical Functions', () => {
 
     it('should calculate inverse trigonometric functions', () => {
       assertAlmostEqual(parsec.eval('asin(0)'), 0, 1e-10)
-      assertAlmostEqual(parsec.eval('asin(1)'), Math.PI/2, 1e-10)
+      assertAlmostEqual(parsec.eval('asin(1)'), Math.PI / 2, 1e-10)
       assertAlmostEqual(parsec.eval('acos(1)'), 0, 1e-10)
-      assertAlmostEqual(parsec.eval('acos(0)'), Math.PI/2, 1e-10)
+      assertAlmostEqual(parsec.eval('acos(0)'), Math.PI / 2, 1e-10)
       assertAlmostEqual(parsec.eval('atan(0)'), 0, 1e-10)
-      assertAlmostEqual(parsec.eval('atan(1)'), Math.PI/4, 1e-10)
+      assertAlmostEqual(parsec.eval('atan(1)'), Math.PI / 4, 1e-10)
     })
 
     it('should calculate atan2 with quadrant fix', () => {
-      assertAlmostEqual(parsec.eval('atan2(1, 1)'), Math.PI/4, 1e-10)
-      assertAlmostEqual(parsec.eval('atan2(1, -1)'), 3*Math.PI/4, 1e-10)
-      assertAlmostEqual(parsec.eval('atan2(-1, -1)'), -3*Math.PI/4, 1e-10)
-      assertAlmostEqual(parsec.eval('atan2(-1, 1)'), -Math.PI/4, 1e-10)
+      assertAlmostEqual(parsec.eval('atan2(1, 1)'), Math.PI / 4, 1e-10)
+      assertAlmostEqual(parsec.eval('atan2(1, -1)'), (3 * Math.PI) / 4, 1e-10)
+      assertAlmostEqual(parsec.eval('atan2(-1, -1)'), (-3 * Math.PI) / 4, 1e-10)
+      assertAlmostEqual(parsec.eval('atan2(-1, 1)'), -Math.PI / 4, 1e-10)
     })
   })
 

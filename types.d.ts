@@ -140,10 +140,10 @@ export default class Parsec {
    * ```typescript
    * const result = parsec.eval('2 + 3 * 4');
    * console.log(result); // 14 (number)
-   * 
+   *
    * const text = parsec.eval('concat("Hello", " World")');
    * console.log(text); // "Hello World" (string)
-   * 
+   *
    * const bool = parsec.eval('5 > 3');
    * console.log(bool); // true (boolean)
    * ```

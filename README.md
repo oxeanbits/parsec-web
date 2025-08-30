@@ -11,7 +11,7 @@
 **Parsec Web** is a generalized JavaScript library that connects to the equations-parser WebAssembly module (C++ code) for high-performance equation evaluation. This library is designed to be reusable across multiple platforms including:
 
 - **Frontend Projects**: React, Vue, Angular, vanilla JavaScript
-- **Flutter Web Projects**: Via dart:js_interop integration  
+- **Flutter Web Projects**: Via dart:js_interop integration
 - **Node.js Applications**: As an importable library
 - **Cross-Platform Solutions**: General enough to work across different JavaScript environments
 
@@ -20,6 +20,7 @@ The library transforms equation processing from server-dependent operations to l
 ### 🔄 Architecture Transformation
 
 **Before (Traditional Backend):**
+
 ```mermaid
 graph LR
     A[🌐 Web] --> B[📡 Network] --> C[🌍 Backend Server] --> D[📚 Parsec Library] --> E[⚙️ C++ equations-parser]
@@ -34,6 +35,7 @@ graph LR
 ❌ Problems: Network latency, server costs, scaling issues, offline limitations
 
 **After (Parsec Web):**
+
 ```mermaid
 graph LR
     A[🌐 Web] --> B[🚀 Parsec Web<br/>WebAssembly] --> C[⚙️ C++ equations-parser]
@@ -46,6 +48,7 @@ graph LR
 ✅ Benefits: Zero latency, no server costs, infinite scalability, offline capable
 
 ### 📋 Key Features
+
 - **100x Faster**: ~1ms vs ~110ms equation processing
 - **Zero Infrastructure**: No backend servers needed
 - **Full Offline Support**: Works without internet
@@ -55,10 +58,12 @@ graph LR
 ## 🏗️ Implementation Phases
 
 ### ✅ Phase 1: Basic WebAssembly + JavaScript Integration
+
 **Status**: Ready for testing  
 **Goal**: Create and test C++ → WASM → JavaScript integration
 
 **What's included:**
+
 - C++ math functions (`sum`, `multiply`)
 - Emscripten compilation setup
 - JavaScript wrapper library
@@ -66,17 +71,20 @@ graph LR
 - Comprehensive documentation
 
 **Files:**
+
 - `cpp/math_functions.cpp` - C++ source with Emscripten bindings
 - `build.sh` - Compilation script with detailed flags
 - `js/math_wrapper.js` - JavaScript wrapper with error handling
 - `html/test.html` - Interactive test interface
 - `docs/phase1-guide.md` - Complete setup and testing guide
 
-### ✅ Phase 2: Equations-Parser WebAssembly Integration *(COMPLETED)*
+### ✅ Phase 2: Equations-Parser WebAssembly Integration _(COMPLETED)_
+
 **Status**: **FULLY IMPLEMENTED** with native type conversion  
 **Goal**: Compile the real equations-parser C++ library to WebAssembly and create comprehensive web testing interface
 
 **✅ What's completed:**
+
 - ✅ Replaced toy math functions with actual equations-parser library
 - ✅ Set up equations-parser as git submodule from `https://github.com/oxeanbits/equations-parser`
 - ✅ Compiled comprehensive equation evaluation from `equations-parser` lib to WASM
@@ -91,41 +99,46 @@ graph LR
 - ✅ Full support for all equations-parser features:
   - ✅ **Math functions**: sin, cos, tan, ln, log, abs, sqrt, pow, exp, etc.
   - ✅ **String functions**: concat, length, toupper, tolower, left, right
-  - ✅ **Complex functions**: real, imag, conj, arg, norm  
+  - ✅ **Complex functions**: real, imag, conj, arg, norm
   - ✅ **Array functions**: sizeof, eye, ones, zeros
   - ✅ **Date functions**: current_date, daysdiff, hoursdiff
   - ✅ **Advanced operators**: ternary operators, comparison operators
   - ✅ **Multiple return types**: Returns native JavaScript types instead of strings
 
 **🎯 Key Achievement**: The system now returns properly typed JavaScript values:
+
 ```javascript
-parsec.eval('2 + 3')        // → {value: 5, type: "i"}          (number)
-parsec.eval('sin(pi/2)')    // → {value: 1.0, type: "f"}        (number)  
-parsec.eval('5 > 3')        // → {value: true, type: "b"}       (boolean)
+parsec.eval('2 + 3') // → {value: 5, type: "i"}          (number)
+parsec.eval('sin(pi/2)') // → {value: 1.0, type: "f"}        (number)
+parsec.eval('5 > 3') // → {value: true, type: "b"}       (boolean)
 parsec.eval('concat("a","b")') // → {value: "ab", type: "s"}    (string)
 ```
 
 ### 🔄 Phase 3: Automated Tests for the Equations-Parser WebAssembly Library
+
 **Status**: Complete - **Modern Testing Framework Implementation**  
 **Goal**: Comprehensive testing of equation evaluation through reliable test framework (Vitest)
 
 **What's implemented:**
+
 - **Vitest Test Framework**: Professional, reliable testing environment
 - **Complete Test Coverage**: All equations-parser functionality tested through `Parsec.eval(equation)`
 - **Cross-Platform Testing**: Tests designed to work across all target platforms
 
 **Test Scenarios Covered:**
+
 - **Unit Tests**: Arithmetic, Trigonometry, Logarithms, String Functions, Date Functions, Complex Numbers, Array Operations
-- **Integration Tests**: Complex expressions, Mixed data types, Function combinations  
+- **Integration Tests**: Complex expressions, Mixed data types, Function combinations
 - **Error Handling**: Syntax errors, Runtime errors, Type errors, Edge cases
 - **Performance Benchmarks**: Simple operations, Function calls, Complex expressions
 - **Floating-Point Precision**: Epsilon tolerance testing (1e-10 precision)
 - **Cross-Browser Compatibility**: ES6 module support with WebAssembly
 
 **Files Structure:**
+
 - `vitest.config.js` - Vitest configuration for all environments
 - `tests/unit/` - Individual function category tests
-- `tests/integration/` - Complex equation scenarios  
+- `tests/integration/` - Complex equation scenarios
 - `tests/errors/` - Error handling validation
 - `tests/performance/` - Benchmark testing
 - Package.json scripts for `npm test`, `npm run test:watch`, `npm run test:coverage`
@@ -133,10 +146,11 @@ parsec.eval('concat("a","b")') // → {value: "ab", type: "s"}    (string)
 #### 📋 Test Categories
 
 ##### 🧮 **Basic Arithmetic Tests**
+
 ```javascript
 // Simple operations
 "2 + 3" → 5
-"10 - 4" → 6  
+"10 - 4" → 6
 "7 * 8" → 56
 "15 / 3" → 5
 "2 ^ 3" → 8
@@ -150,6 +164,7 @@ parsec.eval('concat("a","b")') // → {value: "ab", type: "s"}    (string)
 ```
 
 ##### 📐 **Mathematical Functions Tests**
+
 ```javascript
 // Trigonometric functions
 "sin(0)" → 0
@@ -159,7 +174,7 @@ parsec.eval('concat("a","b")') // → {value: "ab", type: "s"}    (string)
 "acos(0)" → π/2
 "atan(1)" → π/4
 
-// Logarithmic functions  
+// Logarithmic functions
 "ln(e)" → 1
 "log(100)" → 2
 "log(1000, 10)" → 3
@@ -173,17 +188,19 @@ parsec.eval('concat("a","b")') // → {value: "ab", type: "s"}    (string)
 ```
 
 ##### 🔤 **String Functions Tests**
+
 ```javascript
 // String operations
 "concat('Hello', ' ', 'World')" → "Hello World"
 "length('test')" → 4
-"toupper('hello')" → "HELLO"  
+"toupper('hello')" → "HELLO"
 "tolower('WORLD')" → "world"
 "left('testing', 4)" → "test"
 "right('testing', 3)" → "ing"
 ```
 
 ##### 📅 **Date/Time Functions Tests**
+
 ```javascript
 // Date operations
 "current_date()" → "2024-MM-DD"
@@ -193,6 +210,7 @@ parsec.eval('concat("a","b")') // → {value: "ab", type: "s"}    (string)
 ```
 
 ##### ❓ **Conditional/Logical Tests**
+
 ```javascript
 // Ternary operators
 "true ? 5 : 3" → 5
@@ -214,6 +232,7 @@ parsec.eval('concat("a","b")') // → {value: "ab", type: "s"}    (string)
 ```
 
 ##### 🔀 **Complex Expression Tests**
+
 ```javascript
 // Nested functions
 "sin(cos(pi/3))" → sin(0.5) → ~0.479
@@ -226,6 +245,7 @@ parsec.eval('concat("a","b")') // → {value: "ab", type: "s"}    (string)
 ```
 
 ##### ⚠️ **Error Handling Tests**
+
 ```javascript
 // Division by zero
 "5 / 0" → Error: "Division by zero"
@@ -235,7 +255,7 @@ parsec.eval('concat("a","b")') // → {value: "ab", type: "s"}    (string)
 "invalidfunc(5)" → Error: "Unknown function: invalidfunc"
 "sin()" → Error: "Invalid number of arguments for sin"
 
-// Type mismatches  
+// Type mismatches
 "'hello' + 5" → Error: "Type mismatch in addition"
 "sin('not_a_number')" → Error: "Invalid argument type"
 
@@ -245,15 +265,17 @@ parsec.eval('concat("a","b")') // → {value: "ab", type: "s"}    (string)
 ```
 
 ##### ⚡ **Performance Benchmark Tests**
+
 ```javascript
 // Speed comparisons (WASM vs JavaScript)
 Simple: "2 + 3" → Target: < 1ms
-Medium: "sin(cos(tan(0.5)))" → Target: < 2ms  
+Medium: "sin(cos(tan(0.5)))" → Target: < 2ms
 Complex: "sqrt(pow(sin(0.5), 2) + pow(cos(0.5), 2)) * log(exp(2.718))" → Target: < 5ms
 Heavy: "sum(sin(1), cos(2), tan(3), ln(4), sqrt(5), abs(-6), pow(7,2), exp(0.5))" → Target: < 20ms
 ```
 
 #### 🛠️ **Test Infrastructure**
+
 - **Test Runner**: Custom JavaScript test framework with WebAssembly integration
 - **Assertion Library**: Comprehensive floating-point equality with epsilon tolerance
 - **Browser Testing**: Automated testing across Chrome, Firefox, Safari, Edge
@@ -262,6 +284,7 @@ Heavy: "sum(sin(1), cos(2), tan(3), ln(4), sqrt(5), abs(-6), pow(7,2), exp(0.5))
 - **Performance Monitoring**: Execution time tracking and regression detection
 
 #### 📁 **Test Files Structure**
+
 ```
 tests/
 ├── unit/                           # Individual function tests
@@ -289,26 +312,30 @@ tests/
 ```
 
 #### 🎯 **Success Criteria**
+
 - ✅ **100% Function Coverage**: All equations-parser features tested
-- ✅ **Cross-Browser Compatible**: Works in Chrome, Firefox, Safari, Edge  
+- ✅ **Cross-Browser Compatible**: Works in Chrome, Firefox, Safari, Edge
 - ✅ **Performance Targets Met**: < 5ms for complex expressions
 - ✅ **Error Handling Robust**: Graceful failure for all edge cases
 - ✅ **Regression Prevention**: Automated CI prevents functionality breaks
 - ✅ **Documentation Complete**: Every test case clearly documented
 
+### 🔄 Phase 4: Flutter Web Integration _(Planned)_
 
-### 🔄 Phase 4: Flutter Web Integration *(Planned)*
 **Goal**: Create a reusable frontend library for equations evaluation that works seamlessly across JavaScript/React and Flutter Web projects
 
 #### 📦 **Library Architecture**
+
 The library will be packaged as:
+
 - **npm package**: For JavaScript/React projects
-- **pub.dev package**: For Flutter Web projects  
+- **pub.dev package**: For Flutter Web projects
 - **Unified WASM core**: Single WebAssembly module used by both platforms
 
 #### 🏗️ **Implementation Steps**
 
 ##### **Step 1: Create Standalone Library Structure**
+
 ```
 parsec-equations-lib/
 ├── core/                          # Core WebAssembly files
@@ -320,7 +347,7 @@ parsec-equations-lib/
 │   ├── equations-evaluator.js     # Clean API wrapper
 │   ├── types.d.ts                 # TypeScript definitions
 │   └── README.md                  # JavaScript usage docs
-├── dart/                          # Dart/Flutter package  
+├── dart/                          # Dart/Flutter package
 │   ├── pubspec.yaml               # pub.dev package configuration
 │   ├── lib/
 │   │   ├── equations_evaluator.dart         # Main Dart API
@@ -340,6 +367,7 @@ parsec-equations-lib/
 ```
 
 ##### **Step 2: Extract and Refactor JavaScript API**
+
 - **Clean up current wrapper**: Simplify the `Parsec` class
 - **Remove HTML dependencies**: Create pure JavaScript library without DOM dependencies
 - **Add TypeScript support**: Generate type definitions for better developer experience
@@ -348,26 +376,24 @@ parsec-equations-lib/
 - **Bundle optimization**: Create minified and non-minified versions
 
 **JavaScript API Example:**
-```javascript
-import { EquationsEvaluator } from 'parsec-equations-lib';
 
-const evaluator = new EquationsEvaluator();
-await evaluator.initialize();
+```javascript
+import { EquationsEvaluator } from 'parsec-equations-lib'
+
+const evaluator = new EquationsEvaluator()
+await evaluator.initialize()
 
 // Basic usage
-const result = evaluator.evaluate('2 + 3 * sin(pi/2)');
-console.log(result.value); // "5"
-console.log(result.type);  // "f" (float)
+const result = evaluator.evaluate('2 + 3 * sin(pi/2)')
+console.log(result.value) // "5"
+console.log(result.type) // "f" (float)
 
 // Batch evaluation
-const results = evaluator.evaluateBatch([
-  '2 + 2',
-  'sqrt(16)', 
-  'concat("Hello", " World")'
-]);
+const results = evaluator.evaluateBatch(['2 + 2', 'sqrt(16)', 'concat("Hello", " World")'])
 ```
 
 ##### **Step 3: Create Flutter Web Package with dart:js_interop**
+
 - **Set up dart:js_interop bindings**: Modern Dart-JavaScript interoperability
 - **Create Dart data classes**: Type-safe result objects and error handling
 - **Asset management**: Bundle WASM files with Flutter package
@@ -375,6 +401,7 @@ const results = evaluator.evaluateBatch([
 - **Future-based API**: Async/await pattern for Flutter integration
 
 **Dart API Example:**
+
 ```dart
 import 'package:parsec_equations_lib/parsec_equations_lib.dart';
 
@@ -402,6 +429,7 @@ switch (result.type) {
 ##### **Step 4: Package Configuration and Publishing**
 
 **NPM Package (package.json):**
+
 ```json
 {
   "name": "parsec-equations-lib",
@@ -417,6 +445,7 @@ switch (result.type) {
 ```
 
 **Pub Package (pubspec.yaml):**
+
 ```yaml
 name: parsec_equations_lib
 version: 1.0.0
@@ -441,6 +470,7 @@ dev_dependencies:
 ```
 
 ##### **Step 5: Cross-Platform Compatibility**
+
 - **Unified WASM module**: Same WebAssembly binary works in both environments
 - **Consistent API design**: Similar method names and behavior patterns
 - **Error code mapping**: Standardized error types across platforms
@@ -450,6 +480,7 @@ dev_dependencies:
 #### 🎯 **Flutter Web Integration Details**
 
 ##### **dart:js_interop Implementation**
+
 ```dart
 // js_interop.dart
 @JS()
@@ -468,7 +499,7 @@ extension type EquationsModule._(JSObject _) implements JSObject {
 }
 
 @JS()
-@anonymous  
+@anonymous
 extension type EquationResult._(JSObject _) implements JSObject {
   external JSString get val;
   external JSString get type;
@@ -477,6 +508,7 @@ extension type EquationResult._(JSObject _) implements JSObject {
 ```
 
 ##### **Flutter Service Layer**
+
 ```dart
 // equations_evaluator.dart
 class EquationsEvaluator {
@@ -488,16 +520,16 @@ class EquationsEvaluator {
 
   Future<void> initialize() async {
     if (_isInitialized) return;
-    
+
     // Load WASM module
     await _loadWasmModule();
-    
+
     // Test module
     final testResult = equationsModule.test_equations_parser_loaded();
     if (testResult.toDart != 42) {
       throw EquationsException('Module initialization failed');
     }
-    
+
     _isInitialized = true;
   }
 
@@ -505,12 +537,12 @@ class EquationsEvaluator {
     if (!_isInitialized) {
       throw EquationsException('Evaluator not initialized');
     }
-    
+
     try {
       final jsResult = await equationsModule
           .eval_equation(equation.toJS)
           .toDart;
-      
+
       return EquationResult.fromJson(jsResult.toDart);
     } catch (e) {
       throw EquationsException('Evaluation failed: $e');
@@ -522,7 +554,7 @@ class EquationsEvaluator {
 #### ✅ **Benefits for Multi-Platform Development**
 
 1. **Code Reuse**: Same mathematical engine across JavaScript and Dart platforms
-2. **Performance Consistency**: Identical WebAssembly performance in both environments  
+2. **Performance Consistency**: Identical WebAssembly performance in both environments
 3. **Maintenance Efficiency**: Single WASM core to update and maintain
 4. **Type Safety**: TypeScript definitions for JS, strong typing in Dart
 5. **Easy Integration**: Simple npm install or pub get to add functionality
@@ -531,30 +563,32 @@ class EquationsEvaluator {
 #### 🚀 **Usage in Target Projects**
 
 ##### **React Project Integration**
+
 ```javascript
 // npm install parsec-equations-lib
-import { EquationsEvaluator } from 'parsec-equations-lib';
+import { EquationsEvaluator } from 'parsec-equations-lib'
 
 function CalculatorComponent() {
-  const [evaluator, setEvaluator] = useState(null);
-  
+  const [evaluator, setEvaluator] = useState(null)
+
   useEffect(() => {
     const init = async () => {
-      const eval = new EquationsEvaluator();
-      await eval.initialize();
-      setEvaluator(eval);
-    };
-    init();
-  }, []);
+      const eval = new EquationsEvaluator()
+      await eval.initialize()
+      setEvaluator(eval)
+    }
+    init()
+  }, [])
 
-  const handleCalculate = (equation) => {
-    const result = evaluator.evaluate(equation);
-    setResult(result);
-  };
+  const handleCalculate = equation => {
+    const result = evaluator.evaluate(equation)
+    setResult(result)
+  }
 }
 ```
 
-##### **Flutter Web Project Integration**  
+##### **Flutter Web Project Integration**
+
 ```dart
 # pubspec.yaml: parsec_equations_lib: ^1.0.0
 
@@ -565,7 +599,7 @@ class CalculatorPage extends StatefulWidget {
 
 class _CalculatorPageState extends State<CalculatorPage> {
   final evaluator = EquationsEvaluator();
-  
+
   @override
   void initState() {
     super.initState();
@@ -582,8 +616,9 @@ class _CalculatorPageState extends State<CalculatorPage> {
 ```
 
 #### 📋 **Success Criteria**
+
 - ✅ **NPM Package**: Successfully published and installable via `npm install`
-- ✅ **Pub Package**: Successfully published and installable via `pub get`  
+- ✅ **Pub Package**: Successfully published and installable via `pub get`
 - ✅ **React Integration**: Works seamlessly in Create React App projects
 - ✅ **Flutter Web Integration**: Works in Flutter Web projects without issues
 - ✅ **Performance**: < 5ms evaluation time for complex expressions
@@ -591,20 +626,24 @@ class _CalculatorPageState extends State<CalculatorPage> {
 - ✅ **Type Safety**: Full TypeScript and Dart type definitions
 - ✅ **Documentation**: Complete API documentation and usage examples
 
-### 🔄 Phase 5: Cross-Platform Mobile Integration *(Optional)*
+### 🔄 Phase 5: Cross-Platform Mobile Integration _(Optional)_
+
 **Goal**: Integrate equations-parser WASM with a small Flutter Web using `dart:js_interop`
 
 **What's planned:**
+
 - Clean Flutter project structure
 - `dart:js_interop` bindings for equations-parser functions
 - Abstract service interface for cross-platform compatibility
 - Web-specific service implementation
 - Flutter UI for equation input and result display
 
-### 🔄 Phase 6: Cross-Platform Mobile Integration *(Optional)*
+### 🔄 Phase 6: Cross-Platform Mobile Integration _(Optional)_
+
 **Goal**: Extend Flutter integration to mobile/desktop platforms
 
 **What's planned:**
+
 - Factory pattern for service creation
 - Platform detection (web vs mobile/desktop)
 - Platform Channel integration for mobile/desktop
@@ -613,6 +652,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
 ## 🚀 Quick Start
 
 ### Installation
+
 ```bash
 # Install the library (when published to npm)
 npm install parsec-equations-lib
@@ -626,6 +666,7 @@ npm install
 ### Basic Usage
 
 #### **ES6 Modules (Recommended)**
+
 ```javascript
 import { EquationsEvaluator } from 'parsec-equations-lib'
 
@@ -635,20 +676,17 @@ await parsec.initialize()
 // Basic evaluation
 const result = parsec.eval('2 + 3 * sin(pi/2)')
 console.log(result.value) // 5
-console.log(result.type)  // 'f' (float)
+console.log(result.type) // 'f' (float)
 
 // Batch evaluation
-const results = parsec.evaluateBatch([
-  '2 + 2',
-  'sqrt(16)', 
-  'concat("Hello", " World")'
-])
+const results = parsec.evaluateBatch(['2 + 2', 'sqrt(16)', 'concat("Hello", " World")'])
 
 // Get library info
 console.log(parsec.getInfo())
 ```
 
 #### **CommonJS (Node.js)**
+
 ```javascript
 const EquationsEvaluator = require('parsec-equations-lib')
 
@@ -660,6 +698,7 @@ console.log(result.value) // 2
 ```
 
 #### **TypeScript**
+
 ```typescript
 import { EquationsEvaluator, EquationResult } from 'parsec-equations-lib'
 
@@ -673,6 +712,7 @@ if (result.success) {
 ```
 
 ### Development Setup
+
 ```bash
 # 1. Build the WebAssembly module
 chmod +x build.sh
@@ -695,7 +735,7 @@ npm run style:fix
 parsec-web/
 ├── cpp/                    # C++ source files
 │   └── math_functions.cpp  # Math functions with WASM bindings
-├── js/                     # JavaScript wrapper libraries  
+├── js/                     # JavaScript wrapper libraries
 │   └── math_wrapper.js     # Clean API for WASM functions
 ├── html/                   # Test HTML files
 │   └── test.html           # Interactive test interface
@@ -711,11 +751,13 @@ parsec-web/
 The project uses **Vitest** as the primary testing framework for comprehensive equation evaluation testing:
 
 ### **Phase 3 Testing Implementation**
+
 - **Framework**: Vitest - modern, fast, reliable testing framework
 - **Target**: All equation evaluation through `Parsec.eval(equation)` method
 - **Coverage**: 100% equations-parser functionality
 
 ### **Test Categories**
+
 1. **Unit Tests**: Individual function categories (arithmetic, trigonometry, logarithms, strings, dates, complex, arrays)
 2. **Integration Tests**: Complex expressions with mixed types and function combinations
 3. **Error Handling**: Comprehensive validation of syntax errors, runtime errors, type errors
@@ -723,6 +765,7 @@ The project uses **Vitest** as the primary testing framework for comprehensive e
 5. **Cross-Browser Compatibility**: ES6 modules with WebAssembly support validation
 
 ### **Running Tests**
+
 ```bash
 # Install dependencies
 npm install
@@ -738,11 +781,12 @@ npm run test:coverage
 
 # Run specific test suites
 npm run test:unit          # Unit tests only
-npm run test:integration   # Integration tests only  
+npm run test:integration   # Integration tests only
 npm run test:performance   # Performance benchmarks only
 ```
 
 ### **Code Quality & Formatting**
+
 The project uses **Prettier** + **ESLint** for consistent code formatting and quality:
 
 ```bash
@@ -763,6 +807,7 @@ npm run style:fix
 ```
 
 **Prettier Configuration:**
+
 - Single quotes, no semicolons
 - 2-space indentation, 100 character line width
 - ES5 trailing commas, avoid arrow parentheses
@@ -772,7 +817,9 @@ npm run style:fix
 ### **Core Methods**
 
 #### `parsec.eval(equation)`
+
 Evaluate a single mathematical expression.
+
 ```javascript
 const result = parsec.eval('2 + 3 * 4')
 // Returns: 14
@@ -785,14 +832,18 @@ const boolean = parsec.eval('5 > 3')
 ```
 
 #### `parsec.evaluateBatch(equations)`
+
 **New in Step 2**: Evaluate multiple expressions in one call.
+
 ```javascript
 const results = parsec.evaluateBatch(['2+2', 'sqrt(16)', 'sin(pi/2)'])
 // Returns array of results with index information
 ```
 
 #### `parsec.evaluateWithTimeout(equation, timeoutMs)`
+
 **New in Step 2**: Evaluate with timeout protection.
+
 ```javascript
 const result = await parsec.evaluateWithTimeout('complex_expression', 5000)
 // Returns: the evaluated result (number, string, or boolean)
@@ -801,7 +852,9 @@ const result = await parsec.evaluateWithTimeout('complex_expression', 5000)
 ### **Library Information**
 
 #### `parsec.getInfo()`
+
 **New in Step 2**: Get comprehensive library metadata.
+
 ```javascript
 const info = parsec.getInfo()
 console.log(info.supportedPlatforms) // ['Browser (ES6)', 'Node.js', ...]
@@ -809,22 +862,26 @@ console.log(info.features) // ['WebAssembly performance', 'Offline capability', 
 ```
 
 #### `parsec.getSupportedFunctions()`
+
 Get detailed information about all available mathematical functions, organized by category.
 
 ### **Import Methods**
 
 #### **ES6 Modules**
+
 ```javascript
 import { EquationsEvaluator } from 'parsec-equations-lib'
 import EquationsEvaluator from 'parsec-equations-lib' // Default import
 ```
 
 #### **CommonJS**
+
 ```javascript
 const EquationsEvaluator = require('parsec-equations-lib')
 ```
 
 #### **TypeScript**
+
 ```typescript
 import { EquationsEvaluator, EquationResult, BatchEvaluationResult } from 'parsec-equations-lib'
 ```

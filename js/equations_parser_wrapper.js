@@ -131,7 +131,7 @@ class Parsec {
       console.log(`✅ JS: Raw result from C++: ${parsedResult.val} (type: ${parsedResult.type})`)
       const convertedValue = this._convert(parsedResult)
       console.log(`✅ JS: Converted result: ${convertedValue} (type: ${parsedResult.type})`)
-      
+
       return convertedValue
     } catch (error) {
       console.error('❌ Error in eval:', error.message || error)

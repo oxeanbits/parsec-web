@@ -1,13 +1,13 @@
 /**
  * String Functions Tests
- * 
+ *
  * Tests for string manipulation functions that are actually supported
  * by the equations-parser WebAssembly module.
  * Based on investigation of actual function behavior.
  */
 
 import { describe, it, expect, beforeAll } from 'vitest'
-import { testUtils, createTestEvaluator } from './setup.js'
+import { createTestEvaluator } from './setup.js'
 
 describe('String Functions', () => {
   let parsec
@@ -109,8 +109,9 @@ describe('String Functions', () => {
 
   describe('HTML Functions', () => {
     it('should create HTML links', () => {
-      expect(parsec.eval('link("Click", "https://example.com")'))
-        .toBe('<a href="https://example.com">Click</a>')
+      expect(parsec.eval('link("Click", "https://example.com")')).toBe(
+        '<a href="https://example.com">Click</a>'
+      )
     })
   })
 
