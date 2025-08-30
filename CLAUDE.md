@@ -339,3 +339,24 @@ npm test -- --reporter verbose --silent false
 ```
 
 This guide serves as the definitive reference for Parsec Web development, focusing on the modern testing approach and cross-platform generalization goals.
+
+## Pull Request Guidance
+
+When prompted with **"draft a pull request"**:
+
+1. **Analyze changes**
+   * Compare everything done on the current branch against `main`.
+   * Summarize all relevant commits, file modifications, and key impacts.
+
+2. **Create a Markdown draft**
+   * Produce content that can be pasted directly into the PR **title** and **description** fields.
+   * **Structure** the description with the template imported below:
+     @status-survey2/.github/pull_request_template.md
+   * Enhance clarity with markdown code fences with language tags, colors, tables, blockquotes for callouts, admonitions (GitHub alerts), mermaid diagrams, images, collapsible details and etc.
+
+3. **Write the Test Guidance section**
+   * Assume the tester has minimal backend or API knowledge.
+   * Describe step-by-step checks performed purely through the frontend—mouse clicks, typing, and other UI interactions.
+
+4. **Generate a Markdown file**
+   * Generate a `pull_request.md` file containing the Pull Request title and description
