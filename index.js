@@ -10,7 +10,7 @@
 
 'use strict'
 
-let EquationsEvaluator
+let Parsec
 
 // Check if we're in a Node.js environment
 if (typeof module !== 'undefined' && typeof require !== 'undefined') {
@@ -25,7 +25,7 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
   }
 
   // Create a wrapper that loads the ES module dynamically
-  class EquationsEvaluatorWrapper {
+  class ParsecWrapper {
     constructor() {
       this._evaluator = null
       this._initialized = false
@@ -66,11 +66,11 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
     }
   }
 
-  EquationsEvaluator = EquationsEvaluatorWrapper
+  Parsec = ParsecWrapper
 } else {
   // Browser environment - fallback to global or throw error
   if (typeof window !== 'undefined' && window.Parsec) {
-    EquationsEvaluator = window.Parsec
+    Parsec = window.Parsec
   } else {
     throw new Error(
       'Parsec WebAssembly module not found. Please ensure the module is properly loaded.'
@@ -79,9 +79,12 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
 }
 
 // Export for CommonJS
-module.exports = EquationsEvaluator
-module.exports.EquationsEvaluator = EquationsEvaluator
-module.exports.default = EquationsEvaluator
+module.exports = Parsec
+module.exports.Parsec = Parsec
+module.exports.default = Parsec
+
+// Legacy export for backward compatibility
+module.exports.EquationsEvaluator = Parsec
 
 // Metadata
 module.exports.version = require('./package.json').version

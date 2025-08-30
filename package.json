@@ -1,5 +1,5 @@
 {
-  "name": "parsec-equations-lib",
+  "name": "parsec-web",
   "version": "1.0.0",
   "type": "module",
   "description": "Fast mathematical expression evaluator powered by WebAssembly - A generalized JavaScript library that connects to equations-parser for cross-platform equation evaluation",

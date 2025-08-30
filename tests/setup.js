@@ -33,9 +33,9 @@ beforeAll(async () => {
 
   // Initialize the evaluator once for all tests
   try {
-    // Dynamic import of the EquationsEvaluator
-    const { default: EquationsEvaluator } = await import('../index.mjs')
-    global.evaluator = new EquationsEvaluator()
+    // Dynamic import of the Parsec
+    const { default: Parsec } = await import('../index.mjs')
+    global.evaluator = new Parsec()
 
     console.log('📦 Initializing WebAssembly module for tests...')
     await global.evaluator.initialize(global.WASM_PATH)

@@ -35,7 +35,7 @@ describe('API Methods', () => {
     it('should provide comprehensive info', () => {
       const info = parsec.getInfo()
       expect(typeof info).toBe('object')
-      expect(info).toHaveProperty('name', 'parsec-equations-lib')
+      expect(info).toHaveProperty('name', 'parsec-web')
       expect(info).toHaveProperty('version', '1.0.0')
       expect(info).toHaveProperty('description')
       expect(info).toHaveProperty('repository')

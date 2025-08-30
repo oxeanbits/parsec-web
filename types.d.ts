@@ -1,5 +1,5 @@
 /**
- * Type definitions for parsec-equations-lib
+ * Type definitions for parsec-web
  *
  * A generalized JavaScript library that connects to equations-parser WebAssembly
  * for cross-platform, high-performance equation evaluation.
@@ -109,11 +109,11 @@ export interface LibraryInfo {
 }
 
 /**
- * Main EquationsEvaluator class for evaluating mathematical expressions
+ * Main Parsec class for evaluating mathematical expressions
  */
-export default class EquationsEvaluator {
+export default class Parsec {
   /**
-   * Create a new EquationsEvaluator instance
+   * Create a new Parsec instance
    */
   constructor()
 
@@ -208,21 +208,21 @@ export default class EquationsEvaluator {
 /**
  * Named export of the main class
  */
-export { EquationsEvaluator }
+export { Parsec }
 
 /**
- * Legacy Parsec class name for backward compatibility
- * @deprecated Use EquationsEvaluator instead
+ * Legacy EquationsEvaluator class name for backward compatibility
+ * @deprecated Use Parsec instead
  */
-export class Parsec extends EquationsEvaluator {}
+export class EquationsEvaluator extends Parsec {}
 
 // Module augmentation for global usage
 declare global {
   interface Window {
-    EquationsEvaluator?: typeof EquationsEvaluator
-    Parsec?: typeof EquationsEvaluator
+    Parsec?: typeof Parsec
+    EquationsEvaluator?: typeof Parsec
   }
 }
 
 // CommonJS compatibility
-export = EquationsEvaluator
+export = Parsec

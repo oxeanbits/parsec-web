@@ -11,26 +11,26 @@
 import ParsecEvaluator from './js/equations_parser_wrapper.js'
 
 /**
- * EquationsEvaluator - Main class for evaluating mathematical expressions
+ * Parsec - Main class for evaluating mathematical expressions
  *
  * @example
  * // Basic usage
- * import { EquationsEvaluator } from 'parsec-equations-lib';
+ * import { Parsec } from 'parsec-web';
  *
- * const evaluator = new EquationsEvaluator();
- * await evaluator.initialize();
+ * const parsec = new Parsec();
+ * await parsec.initialize();
  *
- * const result = evaluator.eval('2 + 3 * sin(pi/2)');
- * console.log(result.value); // 5
+ * const result = parsec.eval('2 + 3 * sin(pi/2)');
+ * console.log(result); // 5
  *
  * @example
  * // Default import
- * import EquationsEvaluator from 'parsec-equations-lib';
+ * import Parsec from 'parsec-web';
  *
- * const evaluator = new EquationsEvaluator();
- * await evaluator.initialize();
+ * const parsec = new Parsec();
+ * await parsec.initialize();
  */
-class EquationsEvaluator extends ParsecEvaluator {
+class Parsec extends ParsecEvaluator {
   constructor() {
     super()
     this._version = '1.0.0'
@@ -59,7 +59,7 @@ class EquationsEvaluator extends ParsecEvaluator {
    */
   getInfo() {
     return {
-      name: 'parsec-equations-lib',
+      name: 'parsec-web',
       version: this._version,
       description: this._description,
       repository: 'https://github.com/your-org/parsec-web',
@@ -146,5 +146,8 @@ class EquationsEvaluator extends ParsecEvaluator {
 }
 
 // Export both named and default
-export { EquationsEvaluator }
-export default EquationsEvaluator
+export { Parsec }
+export default Parsec
+
+// Legacy export for backward compatibility
+export { Parsec as EquationsEvaluator }
