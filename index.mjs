@@ -115,7 +115,7 @@ class EquationsEvaluator extends ParsecEvaluator {
           index,
           equation,
           success: false,
-          error: error.message,
+          error: error.message || error.toString() || 'Unknown error',
         }
       }
     })

@@ -1,6 +1,7 @@
 {
   "name": "parsec-equations-lib",
   "version": "1.0.0",
+  "type": "module",
   "description": "Fast mathematical expression evaluator powered by WebAssembly - A generalized JavaScript library that connects to equations-parser for cross-platform equation evaluation",
   "main": "index.js",
   "module": "index.mjs",
@@ -15,7 +16,7 @@
   },
   "files": [
     "index.js",
-    "index.mjs", 
+    "index.mjs",
     "types.d.ts",
     "js/",
     "wasm/",
@@ -49,7 +50,7 @@
   },
   "keywords": [
     "math",
-    "equations", 
+    "equations",
     "calculator",
     "expressions",
     "webassembly",
@@ -85,11 +86,9 @@
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
+    "jsdom": "^26.1.0",
     "prettier": "^3.0.0",
     "vitest": "^1.0.0"
   },
-  "peerDependencies": {},
-  "dependencies": {},
-  "optionalDependencies": {},
   "sideEffects": false
 }

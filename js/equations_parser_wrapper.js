@@ -525,12 +525,12 @@ class Parsec {
     // Handle special float values first
     switch (result.val) {
       case 'inf':
-        return 'Infinity'
+        return Infinity
       case '-inf':
-        return '-Infinity'
+        return -Infinity
       case 'nan':
       case '-nan':
-        return 'nan'
+        return NaN
     }
 
     // Handle type conversions
@@ -602,7 +602,7 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = Parsec
 } else if (typeof define === 'function' && define.amd) {
   define(() => Parsec)
-} else {
+} else if (typeof window !== 'undefined') {
   // Browser global
   window.Parsec = Parsec
 }
