@@ -8,6 +8,12 @@ set -e  # Exit on any error
 echo "🔧 Building WebAssembly module..."
 echo "=================================="
 
+# Check if we have local emsdk installation and source it
+if [ -f "./emsdk/emsdk_env.sh" ]; then
+    echo "🔧 Sourcing local Emscripten environment..."
+    source ./emsdk/emsdk_env.sh
+fi
+
 # Check if Emscripten is available
 if ! command -v emcc &> /dev/null; then
     echo "❌ Error: Emscripten (emcc) not found!"
