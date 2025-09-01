@@ -770,7 +770,7 @@
                 'ones': 'ones(2, 3)',
                 'zeros': 'zeros(2, 2)',
                 'eye': 'eye(3)',
-                'sizeof': 'sizeof([1,2,3,4])',
+                'sizeof': 'sizeof(eye(4))',
                 
                 // Aggregation
                 'min': 'min(1, 5, 2, 8)',
@@ -782,6 +782,11 @@
                 'mask': 'mask("000-000", 123456)',
                 'regex': 'regex("Hello123", "[0-9]+")',
                 'parserid': 'parserid()',
+                
+                // Constants
+                'pi': 'pi',
+                'e': 'e',
+                'null': 'null',
                 
                 // Constants already handled above in extractFunctionName
             };

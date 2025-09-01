@@ -194,8 +194,7 @@ class Parsec {
                 'ones(rows,cols) - matrix of ones',
                 'zeros(rows,cols) - matrix of zeros',
                 'eye(n) - identity matrix',
-                'size(matrix) - matrix dimensions',
-                "transpose - matrix transpose operator (')"
+                'size(matrix) - matrix dimensions'
             ],
 
             // Array/vector functions

@@ -597,14 +597,14 @@ class _CalculatorPageState extends State<CalculatorPage> {
 ### Build and Test
 ```bash
 # 1. Build the WebAssembly module
-chmod +x build.sh
-./build.sh
+chmod +x build-equations-parser.sh
+./build-equations-parser.sh
 
 # 2. Start local server
 python3 -m http.server 8000
 
 # 3. Open test page
-# Navigate to: http://localhost:8000/html/test.html
+# Navigate to: http://localhost:8000/html/equations-parser-test.html
 ```
 
 ### Expected Results
