@@ -55,6 +55,32 @@ graph LR
 - **Complete Feature Parity**: All equations-parser functions available
 - **Cross-Platform**: Web, Mobile, Desktop support
 
+## 🚀 Quick Start
+
+### Prerequisites
+- Emscripten SDK installed and configured
+- Modern web browser with ES6 module support
+- Local web server (Python, Node.js, or similar)
+
+### Build and Test
+```bash
+# 1. Build the WebAssembly module
+chmod +x build-equations-parser.sh
+./build-equations-parser.sh
+
+# 2. Start local server
+python3 -m http.server 8000
+
+# 3. Open test page
+# Navigate to: http://localhost:8000/html/equations-parser-test.html
+```
+
+### Expected Results
+- ✅ "WebAssembly module ready!" status message
+- ✅ Interactive math function testing
+- ✅ Automated test suite passes
+- ✅ C++ debug output in console
+
 ## 🏗️ Implementation Phases
 
 ### ✅ Phase 1: Basic WebAssembly + JavaScript Integration _(CLEANED UP)_
