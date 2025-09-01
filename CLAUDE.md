@@ -32,12 +32,12 @@ C++ equations-parser Library
 
 ## 📋 Development Phases
 
-### ✅ Phase 1: Basic WebAssembly Integration
+### ✅ Phase 1: Basic WebAssembly Integration (Removed)
 
-- C++ toy functions compiled to WebAssembly
-- JavaScript wrapper library
-- HTML test interface
-- **Status**: Complete
+- ~~C++ toy functions compiled to WebAssembly~~ (Cleaned up - no longer needed)
+- ~~JavaScript wrapper library~~ (Cleaned up - no longer needed)  
+- ~~HTML test interface~~ (Cleaned up - no longer needed)
+- **Status**: Complete and cleaned up
 
 ### ✅ Phase 2: Equations-Parser Integration
 
@@ -315,11 +315,9 @@ parsec-web/
 ├── cpp/                      # C++ source files
 │   └── equations-parser/     # Git submodule
 ├── js/                       # JavaScript library
-│   ├── equations_parser_wrapper.js  # Core WebAssembly wrapper (Parsec class)
-│   └── math_wrapper.js       # Legacy math wrapper (Phase 1)
+│   └── equations_parser_wrapper.js  # Core WebAssembly wrapper (Parsec class)
 ├── wasm/                     # Generated WebAssembly files
-│   ├── equations_parser.js   # Main WebAssembly module
-│   └── math_functions.js     # Legacy math module
+│   └── equations_parser.js   # Main WebAssembly module
 ├── tests/                    # Vitest test suites
 │   ├── setup.js              # Global test configuration
 │   ├── unit/                 # Function category tests

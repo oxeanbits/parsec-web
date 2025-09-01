@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# WebAssembly Build Script for Phase 1
-# This script compiles C++ code to WebAssembly using Emscripten
+# WebAssembly Build Script for equations-parser
+# This script compiles the equations-parser C++ library to WebAssembly using Emscripten
 
 set -e  # Exit on any error
 
@@ -43,38 +43,40 @@ fi
 # Create wasm output directory if it doesn't exist
 mkdir -p wasm
 
-echo "📁 Input file: cpp/math_functions.cpp"
+echo "📁 Input directory: cpp/equations-parser/"
 echo "📁 Output directory: wasm/"
 
-# Compile C++ to WebAssembly
+# Compile equations-parser C++ library to WebAssembly
 # Key Emscripten flags explained:
 # -s WASM=1                   : Generate WebAssembly instead of asm.js
-# -s EXPORTED_FUNCTIONS       : Export specific C functions to JavaScript
-# -s EXPORTED_RUNTIME_METHODS : Export runtime methods like ccall, cwrap
 # -s ALLOW_MEMORY_GROWTH=1    : Allow memory to grow dynamically
 # -s MODULARIZE=1             : Wrap output in a function for import/require
-# -s EXPORT_NAME="MathModule" : Name of the exported module
+# -s EXPORT_NAME="EquationsModule" : Name of the exported module
 # -s EXPORT_ES6=1             : Use ES6 module syntax (import/export)
 # --bind                      : Enable C++ class/function bindings
 # -O2                         : Optimize for speed and size
-# -g                          : Include debug symbols
 # -s ENVIRONMENT=web          : Optimize for browser environment only
 # -s SINGLE_FILE=1            : Embed WASM binary inside JS file
 
-emcc cpp/math_functions.cpp \
+emcc cpp/equations-parser/src/equations_parser.cpp \
+    cpp/equations-parser/src/variable_table.cpp \
+    cpp/equations-parser/src/math_functions.cpp \
+    cpp/equations-parser/src/string_functions.cpp \
+    cpp/equations-parser/src/date_functions.cpp \
+    cpp/equations-parser/src/complex_functions.cpp \
+    cpp/equations-parser/src/array_functions.cpp \
+    cpp/equations_parser_wrapper.cpp \
+    -Icpp/equations-parser/include \
     -s WASM=1 \
-    -s EXPORTED_FUNCTIONS='["_sum", "_multiply", "_test_wasm_loaded"]' \
-    -s EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
     -s ALLOW_MEMORY_GROWTH=1 \
     -s MODULARIZE=1 \
-    -s EXPORT_NAME="MathModule" \
+    -s EXPORT_NAME="EquationsModule" \
     -s EXPORT_ES6=1 \
     --bind \
     -O2 \
-    -g \
     -s ENVIRONMENT=web \
     -s SINGLE_FILE=1 \
-    -o wasm/math_functions.js
+    -o wasm/equations_parser.js
 
 if [ $? -eq 0 ]; then
     echo "✅ Build successful!"
@@ -82,9 +84,9 @@ if [ $? -eq 0 ]; then
     ls -la wasm/
     echo ""
     echo "📋 Next steps:"
-    echo "1. The WASM module is embedded in wasm/math_functions.js"
-    echo "2. You can now use this in your HTML/JavaScript files"
-    echo "3. Run the HTML test to verify everything works"
+    echo "1. The WASM module is embedded in wasm/equations_parser.js"
+    echo "2. You can now use this with the Parsec wrapper in JavaScript"
+    echo "3. Run 'npm test' to verify everything works"
 else
     echo "❌ Build failed!"
     exit 1
