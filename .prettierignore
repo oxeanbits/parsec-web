@@ -4,6 +4,9 @@ node_modules/
 # Submodules
 equations-parser/
 
+# Emscripten SDK
+emsdk/
+
 # Build outputs
 dist/
 coverage/

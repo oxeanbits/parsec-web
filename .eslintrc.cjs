@@ -164,5 +164,6 @@ module.exports = {
     'html/',
     'docs/',
     '*.min.js',
+    'emsdk/', // Emscripten SDK - don't lint
   ],
 }
