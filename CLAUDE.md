@@ -50,10 +50,10 @@ The project is currently in Phase 2, which integrates the full equations-parser 
 
 ```
 parsec-web/
-├── equations-parser/          # C++ library (git submodule)
+├── equations-parser/                # C++ library (git submodule)
 │   └── parser/
-│       ├── equationsParser.h  # Main parser interface
-│       ├── equationsParser.cpp # Core evaluation logic
+│       ├── equationsParser.h        # Main parser interface
+│       ├── equationsParser.cpp      # Core evaluation logic
 │       └── [50+ additional parser files]
 ├── cpp/
 │   └── equations_parser_wrapper.cpp # WebAssembly bindings
@@ -65,7 +65,7 @@ parsec-web/
 │   └── test.html                    # Phase 1 basic test page
 ├── wasm/                            # Generated WebAssembly files
 ├── build-equations-parser.sh        # Phase 2 build script
-└── build.sh                        # Phase 1 build script
+└── build.sh                         # Phase 1 build script
 ```
 
 ### Core Components

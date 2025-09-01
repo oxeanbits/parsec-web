@@ -6,6 +6,19 @@
 // Include equations-parser library
 #include "../equations-parser/parser/equationsParser.h"
 
+// Function declarations
+void logEquationEvaluation(const std::string& equation);
+std::string evaluateEquationSafely(const std::string& equation);
+void logSuccessfulEvaluation(const std::string& result);
+std::string handleKnownException(const std::exception& e);
+std::string handleUnknownException();
+std::string createErrorJson(const std::string& errorMessage);
+void logModuleLoadSuccess();
+int runBasicFunctionalityTest();
+void logTestFailure();
+int getSuccessIndicator();
+int getFailureIndicator();
+
 /**
  * WebAssembly wrapper for the equations-parser library
  * 
