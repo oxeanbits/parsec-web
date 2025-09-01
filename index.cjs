@@ -69,9 +69,6 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
   module.exports.Parsec = ParsecWrapper
   module.exports.default = ParsecWrapper
 
-  // Legacy export for backward compatibility
-  module.exports.EquationsEvaluator = ParsecWrapper
-
   // Metadata
   module.exports.version = require('./package.json').version
   module.exports.description = 'Fast mathematical expression evaluator powered by WebAssembly'
@@ -84,7 +81,6 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
       module.exports = WindowParsec
       module.exports.Parsec = WindowParsec
       module.exports.default = WindowParsec
-      module.exports.EquationsEvaluator = WindowParsec
     }
   } else {
     throw new Error(

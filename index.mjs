@@ -148,6 +148,3 @@ class Parsec extends ParsecEvaluator {
 // Export both named and default
 export { Parsec }
 export default Parsec
-
-// Legacy export for backward compatibility
-export { Parsec as EquationsEvaluator }

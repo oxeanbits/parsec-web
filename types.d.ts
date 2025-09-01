@@ -210,17 +210,10 @@ export default class Parsec {
  */
 export { Parsec }
 
-/**
- * Legacy EquationsEvaluator class name for backward compatibility
- * @deprecated Use Parsec instead
- */
-export class EquationsEvaluator extends Parsec {}
-
 // Module augmentation for global usage
 declare global {
   interface Window {
     Parsec?: typeof Parsec
-    EquationsEvaluator?: typeof Parsec
   }
 }
 

@@ -95,11 +95,10 @@ npm run test:performance # Performance benchmarks
 ### ✅ Phase 4: Library Transformation & Code Quality
 
 - **Package Rename**: `parsec-equations-lib` → `parsec-web` (matches repository)
-- **API Redesign**: `EquationsEvaluator` → `Parsec` class with cleaner naming
+- **API Redesign**: Clean `Parsec` class with intuitive naming
 - **Direct Values**: `parsec.eval('2+3')` → `5` (not wrapped in result object)
 - **Enterprise Linting**: ESLint + Prettier with automated fixing
 - **Multi-Format Package**: CommonJS, ES6 modules, TypeScript definitions
-- **Backward Compatibility**: Legacy names still work for gradual migration
 - **Status**: Complete - Ready for professional use
 
 ### 🔄 Phase 5: Generalization for Cross-Platform Use

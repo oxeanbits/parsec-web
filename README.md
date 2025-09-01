@@ -328,7 +328,7 @@ tests/
 **✅ What's completed:**
 
 - ✅ **Library Rename**: `parsec-equations-lib` → `parsec-web` (matches repository name)
-- ✅ **API Redesign**: `EquationsEvaluator` → `Parsec` class with intuitive naming
+- ✅ **API Redesign**: Clean `Parsec` class with intuitive naming
 - ✅ **Direct Value Returns**: `parsec.eval('2+3')` → `5` (not `{value: 5, type: 'i'}`)
 - ✅ **Multi-Format Package**: CommonJS, ES6 modules, and TypeScript definitions
 - ✅ **Cross-Platform Exports**: Works in Node.js, browsers, and bundlers
@@ -345,10 +345,6 @@ import { Parsec } from 'parsec-web'
 const parsec = new Parsec()
 await parsec.initialize()
 const result = parsec.eval('sin(pi/2)') // → 1 (direct value)
-
-// Backward compatible (still works)
-import { EquationsEvaluator } from 'parsec-web'
-const parsec = new Parsec()
 ```
 
 **🛠️ Development Commands:**
@@ -722,7 +718,7 @@ The project includes a local Emscripten SDK (emsdk) that will be automatically i
 ```javascript
 import { Parsec } from 'parsec-web'
 
-const parsec = new EquationsEvaluator()
+const parsec = new Parsec()
 await parsec.initialize()
 
 // Basic evaluation
@@ -742,7 +738,7 @@ console.log(parsec.getInfo())
 ```javascript
 const { Parsec } = require('parsec-web')
 
-const parsec = new EquationsEvaluator()
+const parsec = new Parsec()
 await parsec.initialize()
 
 const result = parsec.eval('sin(pi/2) + cos(0)')
@@ -754,7 +750,7 @@ console.log(result.value) // 2
 ```typescript
 import { Parsec, EquationResult } from 'parsec-web'
 
-const parsec = new EquationsEvaluator()
+const parsec = new Parsec()
 await parsec.initialize()
 
 const result: EquationResult = parsec.eval('abs(-42)')
