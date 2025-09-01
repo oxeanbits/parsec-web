@@ -20,6 +20,9 @@ test-results.json
 dist/
 build/
 
+# Development tools
+emsdk/
+
 # Environment variables
 .env
 .env.local
