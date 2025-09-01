@@ -8,8 +8,19 @@ set -e  # Exit on any error
 echo "🔧 Building WebAssembly module..."
 echo "=================================="
 
-# Check if we have local emsdk installation and source it
-if [ -f "./emsdk/emsdk_env.sh" ]; then
+# Check if we have local emsdk installation and set it up
+if [ -d "./emsdk" ]; then
+    echo "🔧 Found local Emscripten SDK..."
+    
+    # Check if emsdk is already activated
+    if [ ! -f "./emsdk/emsdk_env.sh" ] || ! ./emsdk/emsdk list | grep -q "INSTALLED.*latest"; then
+        echo "🔧 Installing and activating latest Emscripten..."
+        cd emsdk
+        ./emsdk install latest
+        ./emsdk activate latest
+        cd ..
+    fi
+    
     echo "🔧 Sourcing local Emscripten environment..."
     source ./emsdk/emsdk_env.sh
 fi
@@ -17,14 +28,15 @@ fi
 # Check if Emscripten is available
 if ! command -v emcc &> /dev/null; then
     echo "❌ Error: Emscripten (emcc) not found!"
-    echo "Please install Emscripten:"
-    echo "1. Download from: https://emscripten.org/docs/getting_started/downloads.html"
-    echo "2. Or install via emsdk:"
-    echo "   git clone https://github.com/emscripten-core/emsdk.git"
+    echo "Please set up Emscripten using the local emsdk:"
+    echo "1. The emsdk should already be cloned locally"
+    echo "2. Run this build script again - it will auto-install Emscripten"
+    echo "3. Or manually run:"
     echo "   cd emsdk"
     echo "   ./emsdk install latest"
     echo "   ./emsdk activate latest"
     echo "   source ./emsdk_env.sh"
+    echo "   cd .."
     exit 1
 fi
 

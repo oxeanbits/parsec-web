@@ -199,7 +199,27 @@ npm run build       # Build WebAssembly module
 ```bash
 npm install                   # Install all dependencies
 chmod +x build.sh             # Make build script executable
-./build.sh                    # Compile C++ to WebAssembly
+./build.sh                    # Compile C++ to WebAssembly (auto-installs emsdk)
+```
+
+#### WebAssembly Build Requirements
+
+The project uses a **local Emscripten SDK (emsdk)** that is automatically managed:
+
+- **emsdk Repository**: Already cloned locally in the `emsdk/` folder
+- **First Build**: Automatically installs and activates latest Emscripten
+- **Subsequent Builds**: Uses existing emsdk installation
+- **Git Exclusion**: emsdk folder is in `.gitignore` and excluded from linting
+
+**Manual emsdk Setup** (if needed):
+
+```bash
+cd emsdk
+./emsdk install latest        # Install latest Emscripten
+./emsdk activate latest       # Activate for use
+source ./emsdk_env.sh         # Set environment variables
+cd ..
+./build.sh                    # Build WebAssembly module
 ```
 
 ### Testing (Vitest Framework)

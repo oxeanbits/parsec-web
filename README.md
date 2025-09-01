@@ -699,7 +699,21 @@ npm install parsec-web
 git clone <repository-url>
 cd parsec-web
 npm install
+
+# Build WebAssembly module (requires emsdk)
+# The emsdk will be automatically cloned and set up on first build
+./build.sh
 ```
+
+#### Prerequisites for Building
+
+The project includes a local Emscripten SDK (emsdk) that will be automatically installed when you run the build script. The first time you run `npm run build` or `./build.sh`, it will:
+
+1. Use the locally cloned emsdk repository
+2. Automatically install and activate the latest Emscripten version
+3. Compile the C++ code to WebAssembly
+
+**Note**: The emsdk folder is excluded from git and linting, so it won't interfere with your development workflow.
 
 ### Basic Usage
 
@@ -752,19 +766,43 @@ if (result.success) {
 ### Development Setup
 
 ```bash
-# 1. Build the WebAssembly module
+# 1. Clone and install dependencies
+git clone <repository-url>
+cd parsec-web
+npm install
+
+# 2. Build the WebAssembly module (auto-installs emsdk on first run)
 chmod +x build.sh
 ./build.sh
 
-# 2. Run tests
+# 3. Run tests
 npm test
 
-# 3. Start development server
+# 4. Start development server
 npm run dev
 # Navigate to: http://localhost:8000
 
-# 4. Code formatting and linting
+# 5. Code formatting and linting
 npm run style:fix
+```
+
+#### Building WebAssembly Module
+
+The build process uses a local Emscripten SDK (emsdk) that is automatically managed:
+
+- **First build**: Downloads and installs emsdk automatically
+- **Subsequent builds**: Uses the existing installation
+- **Clean builds**: Re-run `./build.sh` anytime to rebuild the WASM module
+
+If you encounter any build issues, you can manually set up emsdk:
+
+```bash
+cd emsdk
+./emsdk install latest
+./emsdk activate latest
+source ./emsdk_env.sh
+cd ..
+./build.sh
 ```
 
 ## 📁 Project Structure
