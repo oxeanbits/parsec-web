@@ -3,19 +3,19 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Fast mathematical expression evaluator powered by WebAssembly - A generalized JavaScript library that connects to equations-parser for cross-platform equation evaluation",
-  "main": "index.js",
+  "main": "index.cjs",
   "module": "index.mjs",
   "types": "types.d.ts",
   "exports": {
     ".": {
       "import": "./index.mjs",
-      "require": "./index.js",
+      "require": "./index.cjs",
       "types": "./types.d.ts"
     },
     "./package.json": "./package.json"
   },
   "files": [
-    "index.js",
+    "index.cjs",
     "index.mjs",
     "types.d.ts",
     "js/",
@@ -46,7 +46,9 @@
     "style": "npm run lint && npm run format:check",
     "style:fix": "npm run lint:fix && npm run format",
     "serve": "python3 -m http.server 8000",
-    "dev": "python3 -m http.server 8000"
+    "dev": "python3 -m http.server 8000",
+    "prepublishOnly": "npm run build && npm run test:run && npm run lint",
+    "prepack": "npm run build"
   },
   "keywords": [
     "math",
@@ -73,13 +75,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/your-org/parsec-web.git"
+    "url": "git+https://github.com/oxeanbits/parsec-web.git"
   },
   "bugs": {
-    "url": "https://github.com/your-org/parsec-web/issues"
+    "url": "https://github.com/oxeanbits/parsec-web/issues"
   },
-  "homepage": "https://github.com/your-org/parsec-web#readme",
-  "author": "Your Name <your.email@example.com>",
+  "homepage": "https://github.com/oxeanbits/parsec-web#readme",
+  "author": "OxeanBits",
   "license": "MIT",
   "devDependencies": {
     "@vitest/coverage-v8": "^1.0.0",

@@ -261,6 +261,54 @@ node -e "const E = require('./index.js'); console.log('✅ CommonJS works')"
 node --input-type=module -e "import('./index.mjs').then(()=>console.log('✅ ES6 works'))"
 ```
 
+### Publishing to npm
+
+The repository is configured as a production-ready npm package with dual CommonJS/ES module support:
+
+```bash
+# 1. Ensure everything is built and tested
+npm run build          # Builds WebAssembly module  
+npm test              # Runs comprehensive test suite
+npm run lint          # Checks code quality
+
+# 2. Test package creation
+npm pack --dry-run    # Preview what will be published
+
+# 3. Login to npm (if not already)
+npm login
+
+# 4. Publish to npm registry
+npm publish
+
+# 5. Or publish as scoped package
+npm publish --access public
+```
+
+**Package Structure:**
+- **CommonJS entry**: `index.cjs` for Node.js `require()`
+- **ES Module entry**: `index.mjs` for modern `import`  
+- **TypeScript definitions**: `types.d.ts` with complete type safety
+- **Automated scripts**: `prepublishOnly` and `prepack` ensure quality
+
+**Installation for users:**
+```bash
+npm install parsec-web
+```
+
+**Usage examples:**
+```javascript
+// CommonJS (Node.js)
+const { Parsec } = require('parsec-web')
+
+// ES Modules (modern)
+import { Parsec } from 'parsec-web'
+
+// Usage
+const parsec = new Parsec()
+await parsec.initialize()
+const result = parsec.eval('2 + 3 * 4') // Returns: 14
+```
+
 ## 📁 Project Structure
 
 ```

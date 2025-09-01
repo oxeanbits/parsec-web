@@ -62,7 +62,7 @@ class Parsec extends ParsecEvaluator {
       name: 'parsec-web',
       version: this._version,
       description: this._description,
-      repository: 'https://github.com/your-org/parsec-web',
+      repository: 'https://github.com/oxeanbits/parsec-web',
       supportedPlatforms: [
         'Browser (ES6)',
         'Node.js (CommonJS/ES6)',

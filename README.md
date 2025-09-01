@@ -805,6 +805,89 @@ cd ..
 ./build.sh
 ```
 
+## 📦 Publishing to npm
+
+The repository is fully configured as a production-ready npm package. Here's how to publish it:
+
+### Package Structure
+
+The package provides multiple entry points for maximum compatibility:
+
+- **CommonJS entry**: `index.cjs` for Node.js `require()`
+- **ES Module entry**: `index.mjs` for modern `import`
+- **TypeScript definitions**: `types.d.ts` with complete type safety
+- **Dual module support**: Works with both CommonJS and ES modules
+
+### Publishing Steps
+
+```bash
+# 1. Ensure everything is built and tested
+npm run build          # Builds WebAssembly module
+npm test              # Runs comprehensive test suite
+npm run lint          # Checks code quality
+
+# 2. Test the package locally
+npm pack --dry-run    # Preview what will be published
+
+# 3. Login to npm (if not already logged in)
+npm login
+
+# 4. Publish to npm registry
+npm publish
+
+# 5. Or publish as scoped package with public access
+npm publish --access public
+```
+
+### Package Scripts
+
+The package includes automated quality checks:
+
+- **`prepublishOnly`**: Runs build, tests, and linting before publish
+- **`prepack`**: Ensures fresh WebAssembly build before packaging
+
+### Installation for End Users
+
+Once published, users can install the package:
+
+```bash
+npm install parsec-web
+```
+
+### Usage Examples for End Users
+
+```javascript
+// CommonJS (Node.js)
+const { Parsec } = require('parsec-web')
+
+// ES Modules (modern JavaScript)
+import { Parsec } from 'parsec-web'
+
+// TypeScript
+import { Parsec, EquationResult } from 'parsec-web'
+
+// Usage
+const parsec = new Parsec()
+await parsec.initialize()
+const result = parsec.eval('2 + 3 * 4') // Returns: 14
+
+// Batch evaluation
+const results = parsec.evaluateBatch(['2+2', 'sqrt(16)', 'sin(pi/2)'])
+
+// With timeout protection
+const result = await parsec.evaluateWithTimeout('complex_expression', 5000)
+```
+
+### Cross-Platform Compatibility
+
+The published package works across:
+
+- **Frontend Projects**: React, Vue, Angular, vanilla JavaScript
+- **Node.js Applications**: Both CommonJS and ES modules
+- **TypeScript Projects**: Full type definitions included
+- **Bundlers**: Webpack, Rollup, Vite, Parcel
+- **Flutter Web**: Via dart:js_interop integration
+
 ## 📁 Project Structure
 
 ```

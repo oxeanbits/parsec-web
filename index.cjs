@@ -10,10 +10,8 @@
 
 'use strict'
 
-let Parsec
-
-// Check if we're in a Node.js environment
-if (typeof module !== 'undefined' && typeof require !== 'undefined') {
+// Check if we're in a CommonJS Node.js environment
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
   // Node.js environment - use dynamic import for ES module
   let evaluatorPromise = null
 
@@ -66,27 +64,31 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
     }
   }
 
-  Parsec = ParsecWrapper
+  // Export for CommonJS in Node.js environment
+  module.exports = ParsecWrapper
+  module.exports.Parsec = ParsecWrapper
+  module.exports.default = ParsecWrapper
+
+  // Legacy export for backward compatibility
+  module.exports.EquationsEvaluator = ParsecWrapper
+
+  // Metadata
+  module.exports.version = require('./package.json').version
+  module.exports.description = 'Fast mathematical expression evaluator powered by WebAssembly'
 } else {
   // Browser environment - fallback to global or throw error
   if (typeof window !== 'undefined' && window.Parsec) {
     const { Parsec: WindowParsec } = window
-    Parsec = WindowParsec
+    // For browser environments, set global exports
+    if (typeof module !== 'undefined' && module.exports) {
+      module.exports = WindowParsec
+      module.exports.Parsec = WindowParsec
+      module.exports.default = WindowParsec
+      module.exports.EquationsEvaluator = WindowParsec
+    }
   } else {
     throw new Error(
       'Parsec WebAssembly module not found. Please ensure the module is properly loaded.'
     )
   }
 }
-
-// Export for CommonJS
-module.exports = Parsec
-module.exports.Parsec = Parsec
-module.exports.default = Parsec
-
-// Legacy export for backward compatibility
-module.exports.EquationsEvaluator = Parsec
-
-// Metadata
-module.exports.version = require('./package.json').version
-module.exports.description = 'Fast mathematical expression evaluator powered by WebAssembly'
