@@ -35,7 +35,7 @@ C++ equations-parser Library
 ### ✅ Phase 1: Basic WebAssembly Integration (Removed)
 
 - ~~C++ toy functions compiled to WebAssembly~~ (Cleaned up - no longer needed)
-- ~~JavaScript wrapper library~~ (Cleaned up - no longer needed)  
+- ~~JavaScript wrapper library~~ (Cleaned up - no longer needed)
 - ~~HTML test interface~~ (Cleaned up - no longer needed)
 - **Status**: Complete and cleaned up
 
@@ -196,7 +196,7 @@ npm run build       # Build WebAssembly module
 ### Setup & Installation
 
 ```bash
-npm install                   # Install all dependencies  
+npm install                   # Install all dependencies
 chmod +x build.sh             # Make build script executable
 ./build.sh                    # Compile C++ to WebAssembly
 ```
@@ -266,7 +266,7 @@ The repository is configured as a production-ready npm package with dual CommonJ
 
 ```bash
 # 1. Ensure everything is built and tested
-npm run build          # Builds WebAssembly module  
+npm run build          # Builds WebAssembly module
 npm test              # Runs comprehensive test suite
 npm run lint          # Checks code quality
 
@@ -284,17 +284,20 @@ npm publish --access public
 ```
 
 **Package Structure:**
+
 - **CommonJS entry**: `index.cjs` for Node.js `require()`
-- **ES Module entry**: `index.mjs` for modern `import`  
+- **ES Module entry**: `index.mjs` for modern `import`
 - **TypeScript definitions**: `types.d.ts` with complete type safety
 - **Automated scripts**: `prepublishOnly` and `prepack` ensure quality
 
 **Installation for users:**
+
 ```bash
 npm install parsec-web
 ```
 
 **Usage examples:**
+
 ```javascript
 // CommonJS (Node.js)
 const { Parsec } = require('parsec-web')

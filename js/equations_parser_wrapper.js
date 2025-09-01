@@ -222,7 +222,6 @@ class Parsec {
         'zeros(rows,cols) - matrix of zeros',
         'eye(n) - identity matrix',
         'size(matrix) - matrix dimensions',
-        "transpose - matrix transpose operator (')",
       ],
 
       // Array/vector functions
@@ -369,19 +368,14 @@ class Parsec {
       equation: testCase.equation,
       description: testCase.description,
       expected: testCase.expected,
-      actual: result.success ? result.value : result.error,
+      actual: result,
       passed: false,
     }
   }
 
   _evaluateTestResult(testResult, testCase, result) {
-    if (!result.success) {
-      testResult.passed = false
-      testResult.error = result.error
-      return
-    }
-
-    const actualValue = result.value.toString()
+    // With the new API, result is the direct value, not an object
+    const actualValue = result.toString()
     const expectedValue = testCase.expected.toString()
 
     testResult.passed = testCase.allowBooleanString
