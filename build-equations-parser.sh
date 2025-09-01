@@ -59,11 +59,10 @@ emcc cpp/equations_parser_wrapper.cpp $PARSER_SOURCES \
     -s WASM=1 \
     -s ALLOW_MEMORY_GROWTH=1 \
     -s MODULARIZE=1 \
-    -s EXPORT_NAME="EquationsParserModule" \
+    -s EXPORT_NAME="EquationsModule" \
     -s EXPORT_ES6=1 \
     --bind \
-    -O2 \
-    -g \
+    -O3 \
     -s ENVIRONMENT=web \
     -s SINGLE_FILE=1 \
     -o wasm/equations_parser.js
