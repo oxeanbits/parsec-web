@@ -196,23 +196,23 @@ npm run build       # Build WebAssembly module
 ### Setup & Installation
 
 ```bash
-npm install                   # Install all dependencies
+npm install                   # Install all dependencies  
 chmod +x build.sh             # Make build script executable
-./build.sh                    # Compile C++ to WebAssembly (auto-installs emsdk)
+./build.sh                    # Compile C++ to WebAssembly
 ```
 
 #### WebAssembly Build Requirements
 
-The project uses a **local Emscripten SDK (emsdk)** that is automatically managed:
+The project requires **Emscripten** to compile the C++ equations-parser library to WebAssembly:
 
-- **emsdk Repository**: Already cloned locally in the `emsdk/` folder
-- **First Build**: Automatically installs and activates latest Emscripten
-- **Subsequent Builds**: Uses existing emsdk installation
-- **Git Exclusion**: emsdk folder is in `.gitignore` and excluded from linting
+- **System Installation**: Install via package manager (`apt-get install emscripten`)
+- **Official Download**: From https://emscripten.org/docs/getting_started/downloads.html
+- **Manual emsdk Setup**: Clone and configure emsdk repository manually
 
 **Manual emsdk Setup** (if needed):
 
 ```bash
+git clone https://github.com/emscripten-core/emsdk.git
 cd emsdk
 ./emsdk install latest        # Install latest Emscripten
 ./emsdk activate latest       # Activate for use
@@ -332,7 +332,7 @@ parsec-web/
 ├── .eslintrc.js              # ESLint configuration
 ├── .prettierrc               # Prettier configuration
 ├── .prettierignore           # Prettier ignore patterns
-├── build.sh                  # WebAssembly compilation
+├── build.sh                  # WebAssembly build script
 ├── README.md                 # Public documentation
 └── CLAUDE.md                 # This development guide
 ```

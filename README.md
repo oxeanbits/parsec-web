@@ -689,19 +689,19 @@ cd parsec-web
 npm install
 
 # Build WebAssembly module (requires emsdk)
-# The emsdk will be automatically cloned and set up on first build
+# Uses system Emscripten installation or emsdk
 ./build.sh
 ```
 
 #### Prerequisites for Building
 
-The project includes a local Emscripten SDK (emsdk) that will be automatically installed when you run the build script. The first time you run `npm run build` or `./build.sh`, it will:
+The project requires Emscripten to compile C++ to WebAssembly. You can install it via:
 
-1. Use the locally cloned emsdk repository
-2. Automatically install and activate the latest Emscripten version
-3. Compile the C++ code to WebAssembly
+1. **System package manager**: `apt-get install emscripten` (Linux)
+2. **Official download**: https://emscripten.org/docs/getting_started/downloads.html
+3. **emsdk**: Manual setup with the Emscripten SDK
 
-**Note**: The emsdk folder is excluded from git and linting, so it won't interfere with your development workflow.
+The build script will automatically detect your Emscripten installation and compile the equations-parser C++ library to WebAssembly.
 
 ### Basic Usage
 
@@ -776,22 +776,13 @@ npm run style:fix
 
 #### Building WebAssembly Module
 
-The build process uses a local Emscripten SDK (emsdk) that is automatically managed:
+The build process compiles the equations-parser C++ library to WebAssembly:
 
-- **First build**: Downloads and installs emsdk automatically
-- **Subsequent builds**: Uses the existing installation
 - **Clean builds**: Re-run `./build.sh` anytime to rebuild the WASM module
+- **Automatic detection**: Finds all required C++ source files automatically
+- **Optimized output**: Produces a compact WebAssembly module (~636KB)
 
-If you encounter any build issues, you can manually set up emsdk:
-
-```bash
-cd emsdk
-./emsdk install latest
-./emsdk activate latest
-source ./emsdk_env.sh
-cd ..
-./build.sh
-```
+If you encounter build issues, ensure Emscripten is properly installed and available in your PATH.
 
 ## 📦 Publishing to npm
 
@@ -890,7 +881,7 @@ parsec-web/
 ├── wasm/                   # Generated WASM files (build output)
 ├── docs/                   # Documentation (if any)
 │   └── (documentation files)
-├── build.sh                # Emscripten compilation script
+├── build.sh                # WebAssembly build script
 └── README.md               # This file
 ```
 
