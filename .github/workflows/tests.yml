@@ -2,8 +2,12 @@ name: CI - Tests
 
 on:
   push:
-    branches: [ main, master, develop, feature/** ]
+    branches:
+      - '**'
   pull_request:
+    branches:
+      - '**'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -45,4 +49,3 @@ jobs:
       #   with:
       #     name: coverage-${{ matrix.os }}-node${{ matrix.node }}
       #     path: coverage
-
