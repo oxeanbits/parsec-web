@@ -39,6 +39,26 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install Emscripten
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y emscripten
+
+      - name: Initialize and update git submodules
+        run: git submodule update --init --recursive
+
+      - name: Build WebAssembly module
+        run: chmod +x build.sh && ./build.sh
+
+      - name: Verify WASM files exist
+        run: |
+          if [ ! -f ./wasm/equations_parser.js ]; then
+            echo "❌ equations_parser.js is missing!"
+            exit 1
+          fi
+          echo "✅ WASM module built successfully"
+          ls -la wasm/
+
       - name: Run tests
         run: npm test -- --run
 
