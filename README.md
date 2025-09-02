@@ -58,15 +58,34 @@ graph LR
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Emscripten SDK installed and configured
 - Modern web browser with ES6 module support
 - Local web server (Python, Node.js, or similar)
 
+#### Prerequisites for Building
+
+1. **Modern web browser with ES6 module support.**
+2. **Local web server.** (Python, Node.js, or similar)
+3. **The project requires Emscripten to compile C++ to WebAssembly.** You can install it via:
+  3.1 **System package manager**:  `apt-get install emscripten` (Linux)
+  3.2 **Official download**: https://emscripten.org/docs/getting_started/downloads.html
+  3.3 **emsdk**: Manual setup with the Emscripten SDK
+
+The build script will automatically detect your Emscripten installation and compile the equations-parser C++ library to WebAssembly.
+
+### Expected Results
+- ✅ "WebAssembly module ready!" status message
+- ✅ Interactive math function testing
+- ✅ Automated test suite passes
+- ✅ C++ debug output in console
+
 ### Build and Test
+
 ```bash
 # 1. Build the WebAssembly module
-chmod +x build-equations-parser.sh
-./build-equations-parser.sh
+chmod +x build.sh
+./build.sh
 
 # 2. Start local server
 python3 -m http.server 8000
@@ -75,11 +94,21 @@ python3 -m http.server 8000
 # Navigate to: http://localhost:8000/html/equations-parser-test.html
 ```
 
-### Expected Results
-- ✅ "WebAssembly module ready!" status message
-- ✅ Interactive math function testing
-- ✅ Automated test suite passes
-- ✅ C++ debug output in console
+### Installation
+
+```bash
+# Install the library (when published to npm)
+npm install parsec-web
+
+# Or clone and install for development
+git clone <repository-url>
+cd parsec-web
+npm install
+
+# Build WebAssembly module (requires emsdk)
+# Uses system Emscripten installation or emsdk
+./build.sh
+```
 
 ## 🎯 Core Features
 
@@ -173,34 +202,6 @@ npm run lint:fix      # Auto-fix linting issues
 npm run format        # Format code with Prettier
 npm run style:fix     # Fix both linting and formatting
 ```
-
-## 🚀 Quick Start
-
-### Installation
-
-```bash
-# Install the library (when published to npm)
-npm install parsec-web
-
-# Or clone and install for development
-git clone <repository-url>
-cd parsec-web
-npm install
-
-# Build WebAssembly module (requires emsdk)
-# Uses system Emscripten installation or emsdk
-./build.sh
-```
-
-#### Prerequisites for Building
-
-The project requires Emscripten to compile C++ to WebAssembly. You can install it via:
-
-1. **System package manager**: `apt-get install emscripten` (Linux)
-2. **Official download**: https://emscripten.org/docs/getting_started/downloads.html
-3. **emsdk**: Manual setup with the Emscripten SDK
-
-The build script will automatically detect your Emscripten installation and compile the equations-parser C++ library to WebAssembly.
 
 ### Basic Usage
 
