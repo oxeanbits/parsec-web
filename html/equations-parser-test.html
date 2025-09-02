@@ -520,7 +520,6 @@
         }
 
         function displayEvaluationResult(result, resultDiv, equation) {
-            // With the new API, result is the direct value, not an object with success property
             const valueType = typeof result;
             const convertedNote = valueType !== 'string' ? ` (converted to ${valueType})` : '';
             

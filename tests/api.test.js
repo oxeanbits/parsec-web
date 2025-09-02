@@ -82,16 +82,13 @@ describe('API Methods', () => {
 
       expect(results).toHaveLength(3)
 
-      // First should succeed
       expect(results[0].success).toBe(true)
       expect(results[0].value).toBe(5)
 
-      // Second should fail
       expect(results[1].success).toBe(false)
       expect(results[1]).toHaveProperty('error')
       expect(typeof results[1].error).toBe('string')
 
-      // Third should succeed
       expect(results[2].success).toBe(true)
       expect(results[2].value).toBe(3)
     })
@@ -189,12 +186,10 @@ describe('API Methods', () => {
       expect(functions).toHaveProperty('conditional')
       expect(functions).toHaveProperty('constants')
 
-      // Each category should be an array
       Object.values(functions).forEach(category => {
         expect(Array.isArray(category)).toBe(true)
       })
 
-      // Should have some basic functions
       expect(functions.arithmetic).toContain('+ (addition)')
       expect(functions.trigonometric).toContain('sin(x) - sine function')
       expect(functions.constants).toContain('pi - π (3.14159...)')
@@ -216,10 +211,8 @@ describe('API Methods', () => {
       expect(Array.isArray(testResults.tests)).toBe(true)
       expect(Array.isArray(testResults.errors)).toBe(true)
 
-      // Should have run some tests
       expect(testResults.passed + testResults.failed).toBeGreaterThan(0)
 
-      // Each test should have the right structure
       if (testResults.tests.length > 0) {
         const test = testResults.tests[0]
         expect(test).toHaveProperty('equation')
@@ -245,8 +238,7 @@ describe('API Methods', () => {
         parsec.eval('undefined_function()')
         expect(false).toBe(true) // Should not reach here
       } catch (error) {
-        // Error might be a string or number, not necessarily an Error object
-        const errorMessage = error.message || error.toString() || String(error)
+        const errorMessage = error.message || error.toString()
         expect(typeof errorMessage).toBe('string')
         expect(errorMessage.length).toBeGreaterThan(0)
       }
