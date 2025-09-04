@@ -505,7 +505,7 @@
             
             try {
                 const result = parsec.eval(input.value.trim());
-                displayEvaluationResult(result, resultDiv);
+                displayEvaluationResult(result, resultDiv, input.value.trim());
             } catch (error) {
                 displayJavaScriptError(error, resultDiv);
             }
@@ -519,33 +519,16 @@
             resultDiv.innerHTML = '<div class="result error">Please enter an equation</div>';
         }
 
-        function displayEvaluationResult(result, resultDiv) {
-            if (result.success) {
-                displaySuccessResult(result, resultDiv);
-            } else {
-                displayErrorResult(result, resultDiv);
-            }
-        }
-
-        function displaySuccessResult(result, resultDiv) {
-            const valueType = typeof result.value;
+        function displayEvaluationResult(result, resultDiv, equation) {
+            const valueType = typeof result;
             const convertedNote = valueType !== 'string' ? ` (converted to ${valueType})` : '';
             
             resultDiv.innerHTML = `
                 <div class="result success">
-                    <div class="result-value">Result: ${result.value}</div>
+                    <div class="result-value">Result: ${result}</div>
                     <div class="result-meta">
-                        Type: ${result.type}${convertedNote} | Equation: ${result.equation}
+                        Type: ${valueType}${convertedNote} | Equation: ${equation}
                     </div>
-                </div>
-            `;
-        }
-
-        function displayErrorResult(result, resultDiv) {
-            resultDiv.innerHTML = `
-                <div class="result error">
-                    <div class="result-value">Error: ${result.error}</div>
-                    <div class="result-meta">Equation: ${result.equation}</div>
                 </div>
             `;
         }
