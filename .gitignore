@@ -23,6 +23,7 @@ wasm/
 
 # Development tools
 emsdk/
+.claude/
 
 # Environment variables
 .env
