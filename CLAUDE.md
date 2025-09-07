@@ -88,6 +88,12 @@ npm run test:performance # Performance benchmarks
 const parsec = new Parsec()
 await parsec.initialize()
 
+// JavaScript-native evaluation (recommended)
+const result = parsec.eval('2 + 3 * 4') // → 14 (number)
+
+// Raw C++ JSON evaluation (for platform consistency)
+const rawResult = parsec.evalRaw('2 + 3 * 4') // → '{"val": "14", "type": "i"}'
+
 // Batch evaluation
 const results = parsec.evaluateBatch(['2+2', 'sqrt(16)', 'sin(pi/2)'])
 
@@ -307,11 +313,16 @@ import Parsec from './js/equations_parser_wrapper.js'
 const parsec = new Parsec()
 await parsec.initialize()
 
-// Evaluate equations
+// Evaluate equations (JavaScript-native values)
 const result = parsec.eval('2 + 3 * 4') // Returns: 14
 const trig = parsec.eval('sin(pi/2)') // Returns: 1
 const complex = parsec.eval('real(3+4i)') // Returns: 3
 const string = parsec.eval('concat("a","b")') // Returns: "ab"
+
+// Raw C++ JSON evaluation (for platform consistency)
+const rawResult = parsec.evalRaw('2 + 3 * 4') // Returns: '{"val": "14", "type": "i"}'
+const rawTrig = parsec.evalRaw('sin(pi/2)') // Returns: '{"val": "1", "type": "f"}'
+const rawString = parsec.evalRaw('concat("a","b")') // Returns: '{"val": "ab", "type": "s"}'
 ```
 
 ### Test Structure Pattern
