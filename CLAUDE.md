@@ -379,7 +379,7 @@ This guide serves as the definitive reference for Parsec Web development, focusi
 When prompted with **"draft a pull request"**:
 
 1. **Analyze changes**
-   - Compare everything done on the current branch against `main`.
+   - Run `git diff upstream/main` and check the changes.
    - Summarize all relevant commits, file modifications, and key impacts.
 
 2. **Create a Markdown draft**
