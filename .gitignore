@@ -19,7 +19,6 @@ test-results.json
 # Build outputs
 dist/
 build/
-wasm/
 
 # Development tools
 emsdk/
