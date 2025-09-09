@@ -126,10 +126,17 @@ npm install
 **Direct Value Returns:**
 
 ```javascript
+// JavaScript-native values (recommended)
 parsec.eval('2 + 3') // → 5 (number)
 parsec.eval('sin(pi/2)') // → 1.0 (number)
 parsec.eval('5 > 3') // → true (boolean)
 parsec.eval('concat("a","b")') // → "ab" (string)
+
+// Raw C++ JSON strings (for platform consistency)
+parsec.evalRaw('2 + 3') // → '{"val": "5", "type": "i"}'
+parsec.evalRaw('sin(pi/2)') // → '{"val": "1", "type": "f"}'
+parsec.evalRaw('5 > 3') // → '{"val": "true", "type": "b"}'
+parsec.evalRaw('concat("a","b")') // → '{"val": "ab", "type": "s"}'
 ```
 
 ## 🧪 Comprehensive Testing
@@ -475,7 +482,7 @@ npm run style:fix
 
 #### `parsec.eval(equation)`
 
-Evaluate a single mathematical expression.
+Evaluate a single mathematical expression and return JavaScript-native values.
 
 ```javascript
 const result = parsec.eval('2 + 3 * 4')
@@ -486,6 +493,26 @@ const text = parsec.eval('concat("Hello", " World")')
 
 const boolean = parsec.eval('5 > 3')
 // Returns: true
+```
+
+#### `parsec.evalRaw(equation)`
+
+Evaluate a single mathematical expression and return raw C++ JSON strings for platform consistency.
+
+```javascript
+const result = parsec.evalRaw('2 + 3 * 4')
+// Returns: '{"val": "14", "type": "i"}'
+
+const text = parsec.evalRaw('concat("Hello", " World")')
+// Returns: '{"val": "Hello World", "type": "s"}'
+
+const boolean = parsec.evalRaw('5 > 3')
+// Returns: '{"val": "true", "type": "b"}'
+
+// Parse the JSON to access individual components
+const parsed = JSON.parse(result)
+console.log(parsed.val)  // "14"
+console.log(parsed.type) // "i" (integer)
 ```
 
 #### `parsec.evaluateBatch(equations)`

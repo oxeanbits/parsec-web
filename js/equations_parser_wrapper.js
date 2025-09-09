@@ -140,6 +140,69 @@ class Parsec {
   }
 
   /**
+   * Evaluate a mathematical equation and return raw C++ JSON result (for platform consistency)
+   * @param {string} equation - The mathematical expression to evaluate
+   * @returns {string} The evaluated result as raw JSON string from C++ equations-parser
+   * @throws {Error} If the equation is invalid or evaluation fails
+   *
+   * This function provides platform-consistent output matching native implementations,
+   * returning the exact JSON format that C++ equations-parser produces.
+   *
+   * @example
+   * // Basic arithmetic
+   * evalRaw("2 + 3 * 4") // → '{"val": "14", "type": "i"}'
+   *
+   * @example
+   * // Trigonometric functions  
+   * evalRaw("sin(pi/2)") // → '{"val": "1", "type": "f"}'
+   *
+   * @example
+   * // String functions
+   * evalRaw('concat("Hello", " World")') // → '{"val": "Hello World", "type": "s"}'
+   *
+   * @example
+   * // Boolean results
+   * evalRaw("5 > 3") // → '{"val": "true", "type": "b"}'
+   *
+   * @example
+   * // Special float values
+   * evalRaw("1/0") // → '{"val": "inf", "type": "f"}'
+   * evalRaw("sqrt(-1)") // → '{"val": "nan", "type": "f"}'
+   *
+   * @example
+   * // Error case (throws exception)
+   * evalRaw("invalid syntax") // throws Error: "Parse error message"
+   */
+  evalRaw(equation) {
+    this._ensureModuleReady()
+
+    try {
+      this._validateEquationInput(equation)
+
+      console.log(`🧮 JS RAW: Evaluating equation: "${equation}"`)
+
+      const jsonResult = this.module.eval_equation(equation)
+      console.log(`🧮 JS RAW: Raw result from C++: ${jsonResult}`)
+
+      // Parse JSON only to check for errors and throw them as exceptions
+      const parsedResult = JSON.parse(jsonResult)
+
+      if (parsedResult.error) {
+        console.log(`❌ JS RAW: Equation evaluation error: ${parsedResult.error}`)
+        throw new Error(parsedResult.error)
+      }
+
+      console.log(`✅ JS RAW: Returning raw JSON result: ${jsonResult}`)
+
+      // Return the raw JSON string from C++ for platform consistency
+      return jsonResult
+    } catch (error) {
+      console.error('❌ Error in evalRaw:', error.message || error)
+      throw error
+    }
+  }
+
+  /**
    * Get information about supported equation types and functions
    * @returns {Object} Information about supported functions and operators
    */
@@ -305,6 +368,60 @@ class Parsec {
     return results
   }
 
+  /**
+   * Run comprehensive tests of both eval() and evalRaw() functions
+   * @returns {Object} Test results with success/failure information for both functions
+   */
+  runComprehensiveTestsBoth() {
+    this._ensureModuleReady()
+
+    console.log('🧪 Running comprehensive tests for both eval() and evalRaw()...')
+    
+    const evalResults = this._createTestResultsContainer()
+    const evalRawResults = this._createTestResultsContainer()
+    const testCases = this._getTestCases()
+
+    // Test eval() function
+    console.log('🧪 Testing eval() function...')
+    for (const testCase of testCases) {
+      this._runSingleTest(testCase, evalResults)
+    }
+
+    // Test evalRaw() function
+    console.log('🧪 Testing evalRaw() function...')
+    for (const testCase of testCases) {
+      this._runSingleTestRaw(testCase, evalRawResults)
+    }
+
+    const totalResults = {
+      eval: {
+        passed: evalResults.passed,
+        failed: evalResults.failed,
+        tests: evalResults.tests,
+        errors: evalResults.errors
+      },
+      evalRaw: {
+        passed: evalRawResults.passed,
+        failed: evalRawResults.failed,
+        tests: evalRawResults.tests,
+        errors: evalRawResults.errors
+      },
+      summary: {
+        totalPassed: evalResults.passed + evalRawResults.passed,
+        totalFailed: evalResults.failed + evalRawResults.failed,
+        evalSuccess: evalResults.failed === 0,
+        evalRawSuccess: evalRawResults.failed === 0,
+        bothSuccess: evalResults.failed === 0 && evalRawResults.failed === 0
+      }
+    }
+
+    console.log(`🧪 eval() results: ${evalResults.passed} passed, ${evalResults.failed} failed`)
+    console.log(`🧪 evalRaw() results: ${evalRawResults.passed} passed, ${evalRawResults.failed} failed`)
+    console.log(`🧪 Overall: ${totalResults.summary.totalPassed} passed, ${totalResults.summary.totalFailed} failed`)
+    
+    return totalResults
+  }
+
   _createTestResultsContainer() {
     return {
       passed: 0,
@@ -363,6 +480,21 @@ class Parsec {
     }
   }
 
+  _runSingleTestRaw(testCase, results) {
+    try {
+      const jsonResult = this.evalRaw(testCase.equation)
+      const parsedResult = JSON.parse(jsonResult)
+      
+      // For evalRaw, we expect the parsed 'val' field to match the expected value
+      const testResult = this._createTestResultRaw(testCase, jsonResult, parsedResult)
+
+      this._evaluateTestResultRaw(testResult, testCase, parsedResult)
+      this._recordTestResult(testResult, results)
+    } catch (error) {
+      this._handleTestError(testCase, error, results)
+    }
+  }
+
   _createTestResult(testCase, result) {
     return {
       equation: testCase.equation,
@@ -373,10 +505,43 @@ class Parsec {
     }
   }
 
+  _createTestResultRaw(testCase, jsonResult, parsedResult) {
+    return {
+      equation: testCase.equation,
+      description: `${testCase.description} (RAW)`,
+      expected: testCase.expected,
+      actual: parsedResult.val,
+      actualJson: jsonResult,
+      actualType: parsedResult.type,
+      passed: false,
+    }
+  }
+
   _evaluateTestResult(testResult, testCase, result) {
     // With the new API, result is the direct value, not an object
     const actualValue = result.toString()
     const expectedValue = testCase.expected.toString()
+
+    testResult.passed = testCase.allowBooleanString
+      ? this._compareBooleanValues(actualValue, expectedValue)
+      : this._compareValues(actualValue, expectedValue)
+  }
+
+  _evaluateTestResultRaw(testResult, testCase, parsedResult) {
+    // For evalRaw, we compare the 'val' field from the parsed JSON
+    const actualValue = parsedResult.val.toString()
+    const expectedValue = testCase.expected.toString()
+
+    // Also verify the JSON structure is correct
+    const hasValidStructure = 
+      parsedResult.hasOwnProperty('val') && 
+      parsedResult.hasOwnProperty('type') &&
+      !parsedResult.hasOwnProperty('error')
+
+    if (!hasValidStructure) {
+      testResult.passed = false
+      return
+    }
 
     testResult.passed = testCase.allowBooleanString
       ? this._compareBooleanValues(actualValue, expectedValue)
