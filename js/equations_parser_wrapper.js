@@ -57,8 +57,6 @@ class Parsec {
    */
   async _loadModule(wasmPath) {
     try {
-      this._logModuleLoadStart(wasmPath)
-
       const moduleFactory = await this._importWasmModule(wasmPath)
       this.module = await this._initializeModule(moduleFactory)
 
@@ -66,7 +64,6 @@ class Parsec {
       this._runModuleTest()
 
       this.isLoaded = true
-      this._logModuleLoadSuccess()
     } catch (error) {
       this._handleModuleLoadError(error)
     }
@@ -121,7 +118,6 @@ class Parsec {
       const parsedResult = JSON.parse(jsonResult)
 
       if (parsedResult.error) {
-        console.log(`❌ JS: Equation evaluation error: ${parsedResult.error}`)
         throw new Error(parsedResult.error)
       }
 
@@ -179,14 +175,12 @@ class Parsec {
       const parsedResult = JSON.parse(jsonResult)
 
       if (parsedResult.error) {
-        console.log(`❌ JS RAW: Equation evaluation error: ${parsedResult.error}`)
         throw new Error(parsedResult.error)
       }
 
       // Return the raw JSON string from C++ for platform consistency
       return jsonResult
     } catch (error) {
-      console.error('❌ Error in evalRaw:', error.message || error)
       throw error
     }
   }
@@ -345,15 +339,12 @@ class Parsec {
   runComprehensiveTests() {
     this._ensureModuleReady()
 
-    console.log('🧪 Running comprehensive equations-parser tests...')
     const results = this._createTestResultsContainer()
     const testCases = this._getTestCases()
 
     for (const testCase of testCases) {
       this._runSingleTest(testCase, results)
     }
-
-    console.log(`🧪 Test results: ${results.passed} passed, ${results.failed} failed`)
     return results
   }
 
@@ -364,20 +355,16 @@ class Parsec {
   runComprehensiveTestsBoth() {
     this._ensureModuleReady()
 
-    console.log('🧪 Running comprehensive tests for both eval() and evalRaw()...')
-    
     const evalResults = this._createTestResultsContainer()
     const evalRawResults = this._createTestResultsContainer()
     const testCases = this._getTestCases()
 
     // Test eval() function
-    console.log('🧪 Testing eval() function...')
     for (const testCase of testCases) {
       this._runSingleTest(testCase, evalResults)
     }
 
     // Test evalRaw() function
-    console.log('🧪 Testing evalRaw() function...')
     for (const testCase of testCases) {
       this._runSingleTestRaw(testCase, evalRawResults)
     }
@@ -403,11 +390,6 @@ class Parsec {
         bothSuccess: evalResults.failed === 0 && evalRawResults.failed === 0
       }
     }
-
-    console.log(`🧪 eval() results: ${evalResults.passed} passed, ${evalResults.failed} failed`)
-    console.log(`🧪 evalRaw() results: ${evalRawResults.passed} passed, ${evalRawResults.failed} failed`)
-    console.log(`🧪 Overall: ${totalResults.summary.totalPassed} passed, ${totalResults.summary.totalFailed} failed`)
-    
     return totalResults
   }
 
@@ -589,18 +571,12 @@ class Parsec {
     return this.loadingPromise !== null
   }
 
-  _logModuleLoadStart(wasmPath) {
-    console.log('🔄 Loading Equations-Parser WebAssembly module from:', wasmPath)
-  }
-
   async _importWasmModule(wasmPath) {
     const moduleImport = await import(wasmPath)
-    console.log('🔍 Module import successful')
 
     const moduleFactory = moduleImport.default
 
     if (typeof moduleFactory !== 'function') {
-      console.log('🔍 Available exports:', Object.keys(moduleImport))
       throw new Error(`Expected factory function, got ${typeof moduleFactory}`)
     }
 
@@ -608,15 +584,17 @@ class Parsec {
   }
 
   async _initializeModule(moduleFactory) {
-    console.log('🔄 Initializing WebAssembly module...')
-    const module = await moduleFactory()
-    console.log('🔍 Module initialized successfully')
+
+    const module = await moduleFactory({
+      print: () => {},
+      printErr: () => {},
+    })
+
     return module
   }
 
   _validateModuleLoaded() {
     if (typeof this.module.test_equations_parser_loaded !== 'function') {
-      console.log('Available module functions:', Object.keys(this.module))
       throw new Error('test_equations_parser_loaded function not found in module')
     }
   }
@@ -632,14 +610,7 @@ class Parsec {
     }
   }
 
-  _logModuleLoadSuccess() {
-    console.log('✅ Equations-Parser WebAssembly module loaded successfully')
-    console.log('🧪 Module test result: 42')
-  }
-
   _handleModuleLoadError(error) {
-    console.error('❌ Failed to load Equations-Parser WebAssembly module:', error)
-    console.error('Error details:', error)
     throw new Error(`Equations-Parser WebAssembly module loading failed: ${error.message}`)
   }
 
@@ -655,13 +626,10 @@ class Parsec {
 
   _createEvaluationResult(parsedResult, equation) {
     if (parsedResult.error) {
-      console.log(`❌ JS: Equation evaluation error: ${parsedResult.error}`)
       return this._createErrorResult(parsedResult.error, equation)
     }
 
-    console.log(`✅ JS: Raw result from C++: ${parsedResult.val} (type: ${parsedResult.type})`)
     const convertedValue = this._convert(parsedResult)
-    console.log(`✅ JS: Converted result: ${convertedValue} (type: ${parsedResult.type})`)
     return this._createSuccessResult(convertedValue, parsedResult.type, equation)
   }
 
@@ -739,8 +707,6 @@ class Parsec {
   }
 
   _handleEvaluationError(error, equation) {
-    console.error('❌ Error in eval:', error.message || error)
-
     return this._createErrorResult(`JavaScript evaluation error: ${error.message}`, equation)
   }
 }
