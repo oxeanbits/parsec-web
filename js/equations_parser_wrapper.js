@@ -116,10 +116,7 @@ class Parsec {
     try {
       this._validateEquationInput(equation)
 
-      console.log(`🧮 JS: Evaluating equation: "${equation}"`)
-
       const jsonResult = this.module.eval_equation(equation)
-      console.log(`🧮 JS: Raw result from C++: ${jsonResult}`)
 
       const parsedResult = JSON.parse(jsonResult)
 
@@ -128,13 +125,10 @@ class Parsec {
         throw new Error(parsedResult.error)
       }
 
-      console.log(`✅ JS: Raw result from C++: ${parsedResult.val} (type: ${parsedResult.type})`)
       const convertedValue = this._convert(parsedResult)
-      console.log(`✅ JS: Converted result: ${convertedValue} (type: ${parsedResult.type})`)
 
       return convertedValue
     } catch (error) {
-      console.error('❌ Error in eval:', error.message || error)
       throw error
     }
   }
@@ -179,10 +173,7 @@ class Parsec {
     try {
       this._validateEquationInput(equation)
 
-      console.log(`🧮 JS RAW: Evaluating equation: "${equation}"`)
-
       const jsonResult = this.module.eval_equation(equation)
-      console.log(`🧮 JS RAW: Raw result from C++: ${jsonResult}`)
 
       // Parse JSON only to check for errors and throw them as exceptions
       const parsedResult = JSON.parse(jsonResult)
@@ -191,8 +182,6 @@ class Parsec {
         console.log(`❌ JS RAW: Equation evaluation error: ${parsedResult.error}`)
         throw new Error(parsedResult.error)
       }
-
-      console.log(`✅ JS RAW: Returning raw JSON result: ${jsonResult}`)
 
       // Return the raw JSON string from C++ for platform consistency
       return jsonResult
