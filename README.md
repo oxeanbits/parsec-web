@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.imgur.com/e1u6sR2.png" alt="Parsec Web Logo" width="200" height="400"/>
+  <img src="https://i.imgur.com/e1u6sR2.png" alt="Parsec Web Logo" width="40%" />
 </p>
 
 <p align="center">
