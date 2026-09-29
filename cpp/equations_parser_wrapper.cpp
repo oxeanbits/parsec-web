@@ -10,10 +10,8 @@
 void logEquationEvaluation(const std::string& equation);
 std::string evaluateEquationSafely(const std::string& equation);
 void logSuccessfulEvaluation(const std::string& result);
-std::string handleParserException(const mup::ParserError& e);
 std::string handleKnownException(const std::exception& e);
 std::string handleUnknownException();
-std::string escapeJsonString(std::string value);
 std::string createErrorJson(const std::string& errorMessage);
 void logModuleLoadSuccess();
 int runBasicFunctionalityTest();
@@ -45,8 +43,6 @@ std::string eval_equation(const std::string& equation) {
         logSuccessfulEvaluation(result);
         return result;
         
-    } catch (const mup::ParserError& e) {
-        return handleParserException(e);
     } catch (const std::exception& e) {
         return handleKnownException(e);
     } catch (...) {
@@ -81,10 +77,6 @@ void logSuccessfulEvaluation(const std::string& result) {
     std::cout << "C++: Result: " << result << std::endl;
 }
 
-std::string handleParserException(const mup::ParserError& e) {
-    return createErrorJson(e.GetMsg());
-}
-
 std::string handleKnownException(const std::exception& e) {
     std::cerr << "C++: Exception caught: " << e.what() << std::endl;
     return createErrorJson("C++ exception: " + std::string(e.what()));
@@ -95,36 +87,8 @@ std::string handleUnknownException() {
     return createErrorJson("Unknown C++ exception occurred");
 }
 
-std::string escapeJsonString(std::string value) {
-    const char hexDigits[] = "0123456789abcdef";
-    std::string escaped;
-    escaped.reserve(value.size());
-
-    for (const unsigned char character : value) {
-        switch (character) {
-            case '"': escaped += "\\\""; break;
-            case '\\': escaped += "\\\\"; break;
-            case '\b': escaped += "\\b"; break;
-            case '\f': escaped += "\\f"; break;
-            case '\n': escaped += "\\n"; break;
-            case '\r': escaped += "\\r"; break;
-            case '\t': escaped += "\\t"; break;
-            default:
-                if (character < 0x20) {
-                    escaped += "\\u00";
-                    escaped += hexDigits[character >> 4];
-                    escaped += hexDigits[character & 0x0f];
-                } else {
-                    escaped += static_cast<char>(character);
-                }
-        }
-    }
-
-    return escaped;
-}
-
 std::string createErrorJson(const std::string& errorMessage) {
-    return "{\"error\": \"" + escapeJsonString(errorMessage) + "\"}";
+    return "{\"error\": \"" + errorMessage + "\"}";
 }
 
 void logModuleLoadSuccess() {

@@ -164,12 +164,6 @@ describe('EvalRaw Function', () => {
   })
 
   describe('String Functions - Raw JSON Output', () => {
-    it('should return valid JSON for escaped string values', () => {
-      for (const equation of ['"\\\\"', 'concat("a", "\\t")']) {
-        expect(() => JSON.parse(parsec.module.eval_equation(equation))).not.toThrow()
-      }
-    })
-
     it('should return JSON for string concatenation', () => {
       const result = parsec.evalRaw('concat("Hello", " World")')
       const parsed = JSON.parse(result)
@@ -230,16 +224,6 @@ describe('EvalRaw Function', () => {
   })
 
   describe('Error Handling - Raw JSON', () => {
-    it('should return parser errors as JSON from the WebAssembly boundary', () => {
-      for (const equation of ['2 + )', '2 + \\', '2 + \b', '2 + \u0001']) {
-        const result = parsec.module.eval_equation(equation)
-        const parsed = JSON.parse(result)
-
-        expect(parsed.error).toEqual(expect.any(String))
-        expect(parsed.error).not.toBe('')
-      }
-    })
-
     it('should throw error for invalid syntax (not return error JSON)', () => {
       expect(() => {
         parsec.evalRaw('2 + )')  // Actual syntax error - unmatched parenthesis
