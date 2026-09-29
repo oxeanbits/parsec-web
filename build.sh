@@ -50,12 +50,14 @@ echo "📋 Found equations-parser sources: $PARSER_SOURCES"
 # -s ENVIRONMENT=web          : Optimize for browser environment only
 # -s SINGLE_FILE=1            : Embed WASM binary inside JS file
 # -I equations-parser/parser  : Include directory for headers
+# -fexceptions                : Preserve C++ throws and catches in the optimized build
 
 echo "🔧 Compiling with Emscripten..."
 
 emcc cpp/equations_parser_wrapper.cpp $PARSER_SOURCES \
     -I equations-parser/parser \
     -std=c++17 \
+    -fexceptions \
     -s WASM=1 \
     -s ALLOW_MEMORY_GROWTH=1 \
     -s MODULARIZE=1 \
