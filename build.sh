@@ -50,7 +50,7 @@ echo "📋 Found equations-parser sources: $PARSER_SOURCES"
 # -s ENVIRONMENT=web          : Optimize for browser environment only
 # -s SINGLE_FILE=1            : Embed WASM binary inside JS file
 # -I equations-parser/parser  : Include directory for headers
-# -fexceptions                : Preserve C++ throws and catches in the optimized build
+# -fwasm-exceptions           : Enable native WebAssembly C++ exception catching
 
 echo "🔧 Compiling with Emscripten..."
 
