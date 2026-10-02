@@ -250,11 +250,13 @@ describe('EvalRaw Function', () => {
   })
 
   describe('after repeated invalid equations', () => {
-    it('should keep evaluating valid equations', () => {
+    beforeAll(() => {
       for (let attempt = 0; attempt < 100; attempt += 1) {
-        expect(() => parsec.evalRaw('2 + )')).toThrow()
+        expect(() => parsec.evalRaw('2 + )')).toThrow(/Unexpected parenthesis/)
       }
+    })
 
+    it('should keep evaluating valid equations', () => {
       const parsed = JSON.parse(parsec.evalRaw('2 + 2'))
 
       expect(parsed.val).toBe('4')
