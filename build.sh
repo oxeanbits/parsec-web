@@ -9,8 +9,8 @@ echo "🧮 Building Equations-Parser WebAssembly module..."
 echo "=================================================="
 
 # Check if Emscripten is available
-if ! command -v emcc &> /dev/null; then
-    echo "❌ Error: Emscripten (emcc) not found!"
+if ! command -v em++ &> /dev/null; then
+    echo "❌ Error: Emscripten C++ compiler (em++) not found!"
     echo "Please install Emscripten:"
     echo "1. Install via `apt-get install emscripten` (Linux)"
     echo "2. Download from: https://emscripten.org/docs/getting_started/downloads.html"
