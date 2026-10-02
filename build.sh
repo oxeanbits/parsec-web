@@ -54,10 +54,10 @@ echo "📋 Found equations-parser sources: $PARSER_SOURCES"
 
 echo "🔧 Compiling with Emscripten..."
 
-emcc cpp/equations_parser_wrapper.cpp $PARSER_SOURCES \
+em++ cpp/equations_parser_wrapper.cpp $PARSER_SOURCES \
     -I equations-parser/parser \
     -std=c++17 \
-    -fexceptions \
+    -fwasm-exceptions \
     -s WASM=1 \
     -s ALLOW_MEMORY_GROWTH=1 \
     -s MODULARIZE=1 \
