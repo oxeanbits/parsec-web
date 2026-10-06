@@ -9,8 +9,8 @@ echo "🧮 Building Equations-Parser WebAssembly module..."
 echo "=================================================="
 
 # Check if Emscripten is available
-if ! command -v emcc &> /dev/null; then
-    echo "❌ Error: Emscripten (emcc) not found!"
+if ! command -v em++ &> /dev/null; then
+    echo "❌ Error: Emscripten C++ compiler (em++) not found!"
     echo "Please install Emscripten:"
     echo "1. Install via `apt-get install emscripten` (Linux)"
     echo "2. Download from: https://emscripten.org/docs/getting_started/downloads.html"
@@ -50,12 +50,14 @@ echo "📋 Found equations-parser sources: $PARSER_SOURCES"
 # -s ENVIRONMENT=web          : Optimize for browser environment only
 # -s SINGLE_FILE=1            : Embed WASM binary inside JS file
 # -I equations-parser/parser  : Include directory for headers
+# -fwasm-exceptions           : Enable native WebAssembly C++ exception catching
 
 echo "🔧 Compiling with Emscripten..."
 
-emcc cpp/equations_parser_wrapper.cpp $PARSER_SOURCES \
+em++ cpp/equations_parser_wrapper.cpp $PARSER_SOURCES \
     -I equations-parser/parser \
     -std=c++17 \
+    -fwasm-exceptions \
     -s WASM=1 \
     -s ALLOW_MEMORY_GROWTH=1 \
     -s MODULARIZE=1 \

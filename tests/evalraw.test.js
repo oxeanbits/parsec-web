@@ -224,6 +224,13 @@ describe('EvalRaw Function', () => {
   })
 
   describe('Error Handling - Raw JSON', () => {
+    it('should preserve parser errors as valid JSON', () => {
+      const result = parsec.module.eval_equation('2 + )')
+      const parsed = JSON.parse(result)
+
+      expect(parsed.error).toMatch(/Unexpected parenthesis/)
+    })
+
     it('should throw error for invalid syntax (not return error JSON)', () => {
       expect(() => {
         parsec.evalRaw('2 + )')  // Actual syntax error - unmatched parenthesis
@@ -246,6 +253,21 @@ describe('EvalRaw Function', () => {
       expect(() => {
         parsec.evalRaw('   ')
       }).toThrow()
+    })
+  })
+
+  describe('after repeated invalid equations', () => {
+    beforeAll(() => {
+      for (let attempt = 0; attempt < 100; attempt += 1) {
+        expect(() => parsec.evalRaw('2 + )')).toThrow(/Unexpected parenthesis/)
+      }
+    })
+
+    it('should keep evaluating valid equations', () => {
+      const parsed = JSON.parse(parsec.evalRaw('2 + 2'))
+
+      expect(parsed.val).toBe('4')
+      expect(parsed.type).toBe('i')
     })
   })
 
